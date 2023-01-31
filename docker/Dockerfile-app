@@ -1,0 +1,29 @@
+FROM php:8.2-apache
+RUN a2enmod rewrite
+RUN usermod -u 1000 www-data
+#----------------------------PHP--------------------------------
+RUN apt update
+RUN apt install wget -y zlib1g-dev g++ libicu-dev zip libzip-dev zip libxml2-dev libldb-dev libldap2-dev libpng-dev libonig-dev libpq-dev nano
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
+RUN docker-php-ext-install opcache
+RUN docker-php-ext-configure zip
+RUN docker-php-ext-install zip
+RUN pecl install redis  \
+    && docker-php-ext-enable redis
+RUN docker-php-ext-install xml
+RUN docker-php-ext-configure mbstring
+RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install gd
+#----------------------------------COMPOSER--------------------------------
+RUN wget https://getcomposer.org/download/2.0.9/composer.phar \
+    && mv composer.phar /usr/bin/composer && chmod +x /usr/bin/composer
+#----------------------------------OTHER--------------------------------
+WORKDIR /var/www/sysdash
+COPY docker/conf/apache.conf /etc/apache2/sites-enabled/000-default.conf
+
+COPY docker/entrypoints/entrypoint-app.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+CMD ["apache2-foreground"]
+ENTRYPOINT ["/entrypoint.sh"]

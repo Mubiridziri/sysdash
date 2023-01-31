@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:latest
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-app
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/sysdash
+    depends_on:
+      - database
+
+  redis:
+    image: redis
+
+  mongodb:
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_DATABASE=events
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=mongo
+    volumes:
+      - db-mongo:/data/db
+
+  consume:
+    restart: on-failure #restart when vendor isn't ready or crash
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-consume
+    entrypoint: ["/var/www/sysdash/bin/console", "messenger:consume", "async"]
+    volumes:
+      - .:/var/www/sysdash
+    depends_on:
+      - database
+      - app
+      - redis
+
+volumes:
+  db-data:
+  db-mongo:

@@ -1,0 +1,17 @@
+FROM php:7.4
+#----------------------------PHP--------------------------------
+RUN apt update
+RUN apt install wget -y zlib1g-dev g++ libicu-dev zip libzip-dev zip libxml2-dev libldb-dev libldap2-dev libpng-dev libonig-dev libpq-dev nano
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
+RUN docker-php-ext-install opcache
+RUN docker-php-ext-configure zip
+RUN docker-php-ext-install zip
+RUN pecl install redis  \
+    && docker-php-ext-enable redis
+RUN docker-php-ext-install xml
+RUN docker-php-ext-configure mbstring
+RUN docker-php-ext-install mbstring
+
+#----------------------------------OTHER--------------------------------
+WORKDIR /var/www/ritm3
