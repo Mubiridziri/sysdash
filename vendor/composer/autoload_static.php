@@ -13,7 +13,6 @@ class ComposerStaticInitbc1005ac2c8b2b29de8ed5528f791e8d
         '8825ede83f2f289127722d4e842cf7e8' => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme/bootstrap.php',
         'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
-        '3a37ebac017bc098e9a86b35401e7a68' => __DIR__ . '/..' . '/mongodb/mongodb/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -45,7 +44,6 @@ class ComposerStaticInitbc1005ac2c8b2b29de8ed5528f791e8d
             'Symfony\\Component\\Routing\\' => 26,
             'Symfony\\Component\\PropertyInfo\\' => 31,
             'Symfony\\Component\\PropertyAccess\\' => 33,
-            'Symfony\\Component\\OptionsResolver\\' => 34,
             'Symfony\\Component\\Messenger\\Bridge\\Redis\\' => 41,
             'Symfony\\Component\\Messenger\\' => 28,
             'Symfony\\Component\\HttpKernel\\' => 29,
@@ -71,24 +69,15 @@ class ComposerStaticInitbc1005ac2c8b2b29de8ed5528f791e8d
             'ProxyManager\\' => 13,
             'PHPStan\\PhpDocParser\\' => 21,
         ),
-        'M' => 
-        array (
-            'MongoDB\\' => 8,
-        ),
         'L' => 
         array (
             'Laminas\\Code\\' => 13,
-        ),
-        'J' => 
-        array (
-            'Jean85\\' => 7,
         ),
         'D' => 
         array (
             'Doctrine\\SqlFormatter\\' => 22,
             'Doctrine\\Persistence\\' => 21,
             'Doctrine\\ORM\\' => 13,
-            'Doctrine\\ODM\\MongoDB\\' => 21,
             'Doctrine\\Migrations\\' => 20,
             'Doctrine\\Instantiator\\' => 22,
             'Doctrine\\Inflector\\' => 19,
@@ -99,7 +88,6 @@ class ComposerStaticInitbc1005ac2c8b2b29de8ed5528f791e8d
             'Doctrine\\Common\\Cache\\' => 22,
             'Doctrine\\Common\\Annotations\\' => 28,
             'Doctrine\\Common\\' => 16,
-            'Doctrine\\Bundle\\MongoDBBundle\\' => 30,
             'Doctrine\\Bundle\\MigrationsBundle\\' => 33,
             'Doctrine\\Bundle\\DoctrineBundle\\' => 31,
         ),
@@ -193,10 +181,6 @@ class ComposerStaticInitbc1005ac2c8b2b29de8ed5528f791e8d
         array (
             0 => __DIR__ . '/..' . '/symfony/property-access',
         ),
-        'Symfony\\Component\\OptionsResolver\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/options-resolver',
-        ),
         'Symfony\\Component\\Messenger\\Bridge\\Redis\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/redis-messenger',
@@ -281,17 +265,9 @@ class ComposerStaticInitbc1005ac2c8b2b29de8ed5528f791e8d
         array (
             0 => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src',
         ),
-        'MongoDB\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/mongodb/mongodb/src',
-        ),
         'Laminas\\Code\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-code/src',
-        ),
-        'Jean85\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/jean85/pretty-package-versions/src',
         ),
         'Doctrine\\SqlFormatter\\' => 
         array (
@@ -304,10 +280,6 @@ class ComposerStaticInitbc1005ac2c8b2b29de8ed5528f791e8d
         'Doctrine\\ORM\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/orm/lib/Doctrine/ORM',
-        ),
-        'Doctrine\\ODM\\MongoDB\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/mongodb-odm/lib/Doctrine/ODM/MongoDB',
         ),
         'Doctrine\\Migrations\\' => 
         array (
@@ -349,10 +321,6 @@ class ComposerStaticInitbc1005ac2c8b2b29de8ed5528f791e8d
         array (
             0 => __DIR__ . '/..' . '/doctrine/common/src',
             1 => __DIR__ . '/..' . '/doctrine/event-manager/src',
-        ),
-        'Doctrine\\Bundle\\MongoDBBundle\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/mongodb-odm-bundle',
         ),
         'Doctrine\\Bundle\\MigrationsBundle\\' => 
         array (

@@ -1,24 +1,29 @@
 <?php
 
-namespace App\Entity\ODM;
+namespace App\Entity;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Document;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Field;
-use Doctrine\ODM\MongoDB\Mapping\Annotations\Id;
+use Doctrine\ORM\Mapping as ORM;
 
-#[Document]
-class Event
+#[ORM\Table(name: "events")]
+#[ORM\Entity(repositoryClass: 'App\Repository\LogRepository')]
+class Log
 {
-    #[Id]
+    const ERROR = 'error';
+    const INFO = 'info';
+    const DEBUG = 'debug';
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id;
 
-    #[Field(type: "string")]
-    private string $serviceToken;
+    #[ORM\ManyToOne(targetEntity: 'App\Entity\Service')]
+    private Service $service;
 
-    #[Field(type: "string")]
+    #[ORM\Column(type: 'text')]
     private string $message;
 
-    #[Field(type: "string")]
+    #[ORM\Column(type: 'string')]
     private string $type;
 
     /**
@@ -35,22 +40,6 @@ class Event
     public function setId(?int $id): void
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceToken(): string
-    {
-        return $this->serviceToken;
-    }
-
-    /**
-     * @param string $serviceToken
-     */
-    public function setServiceToken(string $serviceToken): void
-    {
-        $this->serviceToken = $serviceToken;
     }
 
     /**
@@ -83,5 +72,21 @@ class Event
     public function setType(string $type): void
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return Service
+     */
+    public function getService(): Service
+    {
+        return $this->service;
+    }
+
+    /**
+     * @param Service $service
+     */
+    public function setService(Service $service): void
+    {
+        $this->service = $service;
     }
 }

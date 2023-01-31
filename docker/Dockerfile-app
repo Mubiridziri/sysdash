@@ -3,9 +3,11 @@ RUN a2enmod rewrite
 RUN usermod -u 1000 www-data
 #----------------------------PHP--------------------------------
 RUN apt update
-RUN apt install wget -y zlib1g-dev g++ libicu-dev zip libzip-dev zip libxml2-dev libldb-dev libldap2-dev libpng-dev libonig-dev libpq-dev nano
+RUN apt install wget -y zlib1g-dev g++ libicu-dev zip libzip-dev zip libxml2-dev libldb-dev libldap2-dev libpng-dev libonig-dev libpq-dev nano openssl libssl-dev libcurl4-openssl-dev
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
 RUN docker-php-ext-install pdo pdo_pgsql pgsql
+RUN pecl install mongodb \
+    &&  echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongo.ini
 RUN docker-php-ext-install opcache
 RUN docker-php-ext-configure zip
 RUN docker-php-ext-install zip
@@ -16,11 +18,11 @@ RUN docker-php-ext-configure mbstring
 RUN docker-php-ext-install mbstring
 RUN docker-php-ext-install gd
 #----------------------------------COMPOSER--------------------------------
-RUN wget https://getcomposer.org/download/2.0.9/composer.phar \
+RUN wget https://getcomposer.org/download/2.5.1/composer.phar \
     && mv composer.phar /usr/bin/composer && chmod +x /usr/bin/composer
 #----------------------------------OTHER--------------------------------
 WORKDIR /var/www/sysdash
-COPY docker/conf/apache.conf /etc/apache2/sites-enabled/000-default.conf
+COPY docker/conf/apache2.conf /etc/apache2/sites-enabled/000-default.conf
 
 COPY docker/entrypoints/entrypoint-app.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

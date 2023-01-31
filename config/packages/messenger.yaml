@@ -5,4 +5,4 @@ framework:
 
         routing:
             # async is whatever name you gave your transport above
-            'App\Entity\ODM\Event': async
+            'App\Model\LogQueueMessageModel': async

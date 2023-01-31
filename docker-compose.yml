@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile-app
     ports:
-      - "8000:80"
+      - "8080:80"
     volumes:
       - .:/var/www/sysdash
     depends_on:
@@ -23,15 +23,6 @@ services:
 
   redis:
     image: redis
-
-  mongodb:
-    image: mongo:latest
-    environment:
-      - MONGO_INITDB_DATABASE=events
-      - MONGO_INITDB_ROOT_USERNAME=mongo
-      - MONGO_INITDB_ROOT_PASSWORD=mongo
-    volumes:
-      - db-mongo:/data/db
 
   consume:
     restart: on-failure #restart when vendor isn't ready or crash
