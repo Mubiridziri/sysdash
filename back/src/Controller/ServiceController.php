@@ -42,7 +42,8 @@ class ServiceController extends AbstractController
             throw $this->createNotFoundException();
         }
         $service = $serializer->deserialize($request->getContent(), Service::class, 'json', [
-            AbstractNormalizer::OBJECT_TO_POPULATE => $service
+            AbstractNormalizer::OBJECT_TO_POPULATE => $service,
+            AbstractNormalizer::GROUPS => ['Edit']
         ]);
 
         $em->persist($service);

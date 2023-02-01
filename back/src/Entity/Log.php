@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table(name: "events")]
 #[ORM\Entity(repositoryClass: 'App\Repository\LogRepository')]
@@ -15,15 +16,18 @@ class Log
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['View'])]
     private ?int $id;
 
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Service')]
     private Service $service;
 
     #[ORM\Column(type: 'text')]
+    #[Groups(['View'])]
     private string $message;
 
     #[ORM\Column(type: 'string')]
+    #[Groups(['View'])]
     private string $type;
 
     /**

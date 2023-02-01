@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table(name: "services")]
 #[ORM\Entity]
@@ -14,12 +15,14 @@ class Service
     private ?int $id;
 
     #[ORM\Column(type: "string")]
+    #[Groups(['Edit'])]
     private string $title;
 
     #[ORM\Column(type: "string")]
     private ?string $token;
 
     #[ORM\Column(type: "text")]
+    #[Groups(['Edit'])]
     private ?string $description;
 
     #[ORM\Column(type: "datetime")]

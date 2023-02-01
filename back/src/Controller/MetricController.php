@@ -10,7 +10,9 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[Route("/api/v1/metrics")]
 class MetricController extends AbstractController
@@ -29,6 +31,8 @@ class MetricController extends AbstractController
         $limit = $request->query->get('limit', DoctrinePaginationService::DEFAULT_LIMIT);
 
         $logs = $managerRegistry->getRepository(Metric::class)->getPaginatedLogs($service, $page, $limit);
-        return $this->json($logs);
+        return $this->json($logs,  Response::HTTP_OK, [], [
+            AbstractNormalizer::GROUPS => ['View']
+        ]);
     }
 }
