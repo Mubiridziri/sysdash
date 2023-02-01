@@ -7,7 +7,6 @@ import Container from "@mui/material/Container";
 import NavMenu from "./NavMenu";
 import SwitchMode from "components/SwitchMode";
 import DateTime from "components/DateTime";
-import IconButton from "components/IconButton";
 
 import "./styles.scss";
 
@@ -30,24 +29,15 @@ const Header = ({ user }) => {
           disableGutters
         >
           <div className="header__logo"></div>
+          <Box component="div" sx={{ fontSize: 18 }}>
+            System Dashboard
+          </Box>
           <NavMenu user={user} />
           <Box component="div" sx={{ display: "flex" }}>
             <SwitchMode />
             <Box component="div" sx={{ ml: "38px", mr: "25px" }}>
               <DateTime />
             </Box>
-            <IconButton
-              name="notify"
-              title="Уведомления"
-              size="small"
-              color="inherit"
-            />
-            <IconButton
-              name="user"
-              title="Профиль"
-              size="small"
-              color="inherit"
-            />
           </Box>
         </Toolbar>
       </Container>

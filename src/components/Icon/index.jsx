@@ -47,6 +47,7 @@ import GradeOutlinedIcon from "@mui/icons-material/GradeOutlined";
 import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import CancelIcon from "@mui/icons-material/Cancel";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
 const iconTypes = {
   light: LightIcon,
@@ -96,6 +97,7 @@ const iconTypes = {
   catalogs: SourceOutlinedIcon,
   staff: BadgeOutlinedIcon,
   cancel: CancelIcon,
+  success: CheckCircleOutlineIcon,
 };
 
 const Icon = ({ name, title, ...props }) => {

@@ -63,6 +63,7 @@ const ServerSideTable = ({
   columns,
   data,
   loadData,
+  loadId,
   onView,
   onEdit,
   onDelete,
@@ -105,14 +106,25 @@ const ServerSideTable = ({
       );
     } else {
       const filter = getFilterParams(filterParams);
-      dispatch(
-        loadData({
-          ...pagination,
-          ...sortParams,
-          ...searchParams,
-          ...filter,
-        })
-      );
+      if (loadId) {
+        dispatch(
+          loadData(loadId, {
+            ...pagination,
+            ...sortParams,
+            ...searchParams,
+            ...filter,
+          })
+        );
+      } else {
+        dispatch(
+          loadData({
+            ...pagination,
+            ...sortParams,
+            ...searchParams,
+            ...filter,
+          })
+        );
+      }
     }
 
     dispatch(setPagination({ ...paginationParams, page: newPage + 1 }));
@@ -138,9 +150,21 @@ const ServerSideTable = ({
       );
     } else {
       const filter = getFilterParams(filterParams);
-      dispatch(
-        loadData({ ...pagination, ...sortParams, ...searchParams, ...filter })
-      );
+
+      if (loadId) {
+        dispatch(
+          loadData(loadId, {
+            ...pagination,
+            ...sortParams,
+            ...searchParams,
+            ...filter,
+          })
+        );
+      } else {
+        dispatch(
+          loadData({ ...pagination, ...sortParams, ...searchParams, ...filter })
+        );
+      }
     }
 
     dispatch(setPagination({ page: initialPage, limit: newRowsPerPage }));
@@ -292,7 +316,7 @@ const ServerSideTable = ({
         sx={{
           maxHeight: withToolbar
             ? "calc(100vh - 294px)"
-            : "calc(100vh - 230px)",
+            : "calc(100vh - 240px)",
           ...styleTableContainer,
         }}
       >

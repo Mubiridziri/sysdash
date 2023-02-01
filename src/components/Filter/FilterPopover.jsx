@@ -12,21 +12,12 @@ import Input from "components/FormFields/Input";
 import AsyncSelect from "components/FormFields/AsyncSelect";
 import Select from "components/FormFields/Select";
 import { getFilterParams } from "helpers/requestParams";
-import { setCheckedCheckboxes } from "actions/checkboxes";
 import { DATE_RANGE } from "constants/filter";
 import { parseNumber } from "helpers/parse";
 import DatepickerReactFinalForm from "components/FormFields/Datepicker/DatepickerReactFinalForm";
 import { isValidDate } from "helpers/formValidators";
 
-const FilterPopover = ({
-  fields,
-  open,
-  loadData,
-  onClose,
-  withCheckboxes,
-  withRadioButtons,
-  onRadioButtonClick,
-}) => {
+const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
   const dispatch = useDispatch();
   const requestParams = useSelector((state) => state.requestParams);
 
@@ -37,41 +28,50 @@ const FilterPopover = ({
 
   const onSubmit = (values) => {
     const params = getFilterParams(values);
+    if (loadId) {
+      dispatch(
+        loadData(loadId, {
+          ...paginationParams,
+          ...sortParams,
+          ...searchParams,
+          ...params,
+        })
+      );
+    } else {
+      dispatch(
+        loadData({
+          ...paginationParams,
+          ...sortParams,
+          ...searchParams,
+          ...params,
+        })
+      );
+    }
 
-    dispatch(
-      loadData({
-        ...paginationParams,
-        ...sortParams,
-        ...searchParams,
-        ...params,
-      })
-    );
     dispatch(setFilter(values));
-    if (withCheckboxes) {
-      dispatch(setCheckedCheckboxes({}));
-    }
-    if (withRadioButtons) {
-      onRadioButtonClick(null);
-    }
   };
 
   const onReset = (form) => {
     form.reset();
     if (Object.keys(filterParams).length) {
       dispatch(setFilter({}));
-      dispatch(
-        loadData({
-          ...paginationParams,
-          ...sortParams,
-          ...searchParams,
-        })
-      );
-    }
-    if (withCheckboxes) {
-      dispatch(setCheckedCheckboxes({}));
-    }
-    if (withRadioButtons) {
-      onRadioButtonClick(null);
+      if (loadId) {
+        dispatch(
+          loadData(loadId, {
+            ...paginationParams,
+            ...sortParams,
+            ...searchParams,
+          })
+        );
+      } else {
+        dispatch(
+          loadData({
+            ...paginationParams,
+            ...sortParams,
+            ...searchParams,
+          })
+        );
+      }
     }
   };
 

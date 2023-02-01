@@ -1,28 +1,19 @@
 import React from "react";
+import { Route, Switch } from "react-router-dom";
 import Container from "@mui/material/Container";
+import ExternalSystemsWidget from "widgets/externalSystems";
 
-import WidgetDefault from "widgets/catalog/WidgetDefault";
-
-import { loadExternalSystems } from "actions/catalogs/externalSystems";
-
-import { loadExternalSystem } from "services/catalogs/externalSystems";
-import { URL } from "services/catalogs/externalSystems";
-import { EXTERNAL_SYSTEMS_COLUMNS } from "constants/columns";
-
-const ExternalSystemsPage = () => {
+const ExternalSystemsPage = ({ match: { path } }) => {
   return (
     <Container maxWidth={false}>
-      <WidgetDefault
-        widgetKey="externalSystems"
-        widgetTitle="Внешние системы"
-        reducerKey="externalSystems"
-        modalName="external-systems-modal"
-        url={URL}
-        columns={EXTERNAL_SYSTEMS_COLUMNS}
-        loadData={loadExternalSystems}
-        loadFetchDataById={loadExternalSystem}
-        readOnly
-      />
+      <Switch>
+        <Route
+          exact
+          path={`${path}/:serviceId`}
+          component={ExternalSystemsWidget}
+        />
+        <Route exact path={path} component={ExternalSystemsWidget} />
+      </Switch>
     </Container>
   );
 };
