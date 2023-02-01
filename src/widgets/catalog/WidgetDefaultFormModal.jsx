@@ -15,6 +15,7 @@ const WidgetDefaultFormModal = ({
   updateAction,
   loadFetchDataById,
   renderInitialValuesForm,
+  initialValuesForm,
   onEdit,
   readOnly,
 }) => {
@@ -26,7 +27,7 @@ const WidgetDefaultFormModal = ({
   const isEdit = useSelector(
     (state) => state.modals[modalName] === MODAL_STATE.IS_EDIT
   );
-  const id = useSelector((state) => state.modals.data);
+  const data = useSelector((state) => state.modals.data);
 
   const handleClose = useCallback(
     () => dispatch(closeModal(modalName)),
@@ -36,7 +37,7 @@ const WidgetDefaultFormModal = ({
   return (
     <Modal modalName={modalName} title={getTitleModal(isView, isEdit)}>
       <DefaultForm
-        id={id}
+        id={data?.id}
         fields={fields}
         onEdit={onEdit}
         isView={isView}
@@ -45,6 +46,7 @@ const WidgetDefaultFormModal = ({
         createAction={createAction}
         updateAction={updateAction}
         loadFetchDataById={loadFetchDataById}
+        initialValuesForm={data?.initialValues}
         renderInitialValuesForm={renderInitialValuesForm}
         onSuccess={handleClose}
       />

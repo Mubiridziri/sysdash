@@ -6,11 +6,15 @@ import requestParams from "./requestParams";
 import checkedCheckboxes from "./checkboxes";
 import group from "./group";
 import externalSystems from "./catalogs/externalSystems";
+import logs from "./catalogs/logs";
+import metrics from "./catalogs/metrics";
 
 const appReducer = combineReducers({
   form,
   modals,
   externalSystems,
+  logs,
+  metrics,
   requestParams,
   checkedCheckboxes,
   group,

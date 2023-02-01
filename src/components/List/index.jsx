@@ -1,14 +1,22 @@
 import React, { Fragment, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Box, Divider, List as MuiList } from "@mui/material";
+import { Box, Divider, Pagination, List as MuiList } from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 
 import CircularLoading from "components/CircularLoading";
-import InputSearch from "components/FormFields/InputSearch";
-import { debounce } from "helpers/debounce";
+import IconButton from "components/IconButton";
 
-const List = ({ total, data, loading, loadData, onClick, activeItem }) => {
+const List = ({
+  total,
+  data,
+  loading,
+  loadData,
+  onClick,
+  activeItem,
+  subheader,
+  onAdd,
+}) => {
   const dispatch = useDispatch();
   const [selected, setSelected] = React.useState(null);
 
@@ -17,25 +25,32 @@ const List = ({ total, data, loading, loadData, onClick, activeItem }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetch = (event) => {
-    const value = event.target.value;
-    const params = { limit: 100 };
-    if (value) {
-      params["search"] = value;
-    }
-    dispatch(loadData(params));
+  const onChangePagination = (event, page) => {
+    /* handleChangePagination(); */
+    setSelected(null);
+    dispatch(loadData({ page, limit: 10 }));
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleChange = React.useCallback(debounce(fetch), []);
-
-  const renderSubheader = () => {
-    if (total) {
-      return null;
-    }
+  const renderSubHeader = () => {
     return (
-      <Box component="div" fontSize={14}>
-        Нет данных
+      <Box
+        component="div"
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Box component="div" sx={{ fontWeight: 700 }}>
+          {subheader}
+        </Box>
+        <IconButton
+          name="add"
+          title="Создать"
+          color="secondary"
+          size="small"
+          onClick={onAdd}
+        />
       </Box>
     );
   };
@@ -43,23 +58,18 @@ const List = ({ total, data, loading, loadData, onClick, activeItem }) => {
   return (
     <>
       {loading ? <CircularLoading top={50} left={15} /> : null}
-      <InputSearch
-        fullWidth
-        sx={{ mb: 1 }}
-        onChange={(event) => handleChange(event)}
-      />
+      {renderSubHeader()}
       <MuiList
         sx={{
           flexGrow: 1,
           width: "100%",
-          height: "calc(100% - 34px)",
+          height: "calc(100% - 80px)",
           padding: 0,
           overflow: "auto",
           filter: loading ? "blur(5px)" : "none",
         }}
         component="nav"
         aria-labelledby="nested-list-subheader"
-        subheader={renderSubheader()}
       >
         {data.map((item) => {
           return (
@@ -72,7 +82,8 @@ const List = ({ total, data, loading, loadData, onClick, activeItem }) => {
                 }}
               >
                 <ListItemText
-                  primary={item.displayName}
+                  sx={{ wordBreak: "break-all" }}
+                  primary={item.title}
                   primaryTypographyProps={{ fontSize: 14 }}
                 />
               </ListItemButton>
@@ -81,6 +92,12 @@ const List = ({ total, data, loading, loadData, onClick, activeItem }) => {
           );
         })}
       </MuiList>
+      <Pagination
+        count={Math.ceil(total / 10)}
+        onChange={onChangePagination}
+        color="primary"
+        sx={{ display: "flex", justifyContent: "flex-end", pt: "10px" }}
+      />
     </>
   );
 };

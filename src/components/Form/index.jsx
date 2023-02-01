@@ -21,6 +21,7 @@ const DefaultForm = ({
   isView,
   isEdit,
   loadFetchDataById,
+  initialValuesForm,
   renderInitialValuesForm,
   createAction,
   updateAction,
@@ -31,11 +32,11 @@ const DefaultForm = ({
 }) => {
   const dispatch = useDispatch();
 
-  const [initialValues, setInitialValues] = React.useState({});
+  const [initialValues, setInitialValues] = React.useState(initialValuesForm);
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
-    if (id) fetchInitialValues();
+    if (id && !initialValuesForm) fetchInitialValues();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -53,11 +54,6 @@ const DefaultForm = ({
     } finally {
       setLoading(false);
     }
-  };
-
-  const checkEditClick = () => {
-    onSuccess();
-    onEdit(id);
   };
 
   const onSubmit = (values) => {
@@ -204,42 +200,29 @@ const DefaultForm = ({
                 })}
               </Box>
             </LoadingBlock>
-            {!readOnly ? (
-              <StackButton>
-                {isView ? (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={checkEditClick}
-                  >
-                    Редактировать
-                  </Button>
-                ) : (
-                  <>
-                    <LoadingButton
-                      disabled={pristine || !validSaveBtn || isView}
-                      loading={submitting}
-                      variant="contained"
-                      type="submit"
-                      color="primary"
-                      size="small"
-                    >
-                      Применить
-                    </LoadingButton>
-                    <Button
-                      disabled={isView || pristine || submitting}
-                      variant="outlined"
-                      size="small"
-                      onClick={form.reset}
-                      color="inherit"
-                    >
-                      Сброс
-                    </Button>
-                  </>
-                )}
-              </StackButton>
-            ) : null}
+            <StackButton>
+              <>
+                <LoadingButton
+                  disabled={pristine || !validSaveBtn || isView}
+                  loading={submitting}
+                  variant="contained"
+                  type="submit"
+                  color="primary"
+                  size="small"
+                >
+                  Применить
+                </LoadingButton>
+                <Button
+                  disabled={isView || pristine || submitting}
+                  variant="outlined"
+                  size="small"
+                  onClick={form.reset}
+                  color="inherit"
+                >
+                  Сброс
+                </Button>
+              </>
+            </StackButton>
             {submitError && !dirtySinceLastSubmit && (
               <FormHelperText error={submitError} />
             )}
@@ -253,6 +236,7 @@ const DefaultForm = ({
 DefaultForm.defaultProps = {
   fields: [],
   onSuccess: () => {},
+  initialValuesForm: {},
   isView: false,
   isEdit: false,
   readOnly: false,

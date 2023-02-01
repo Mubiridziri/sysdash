@@ -13,3 +13,18 @@ export const loadExternalSystem = (id) => {
     .then((json) => json)
     .catch((e) => e);
 };
+
+export const createExternalSystem = (values) => {
+  return fetchRequest(URL, { method: "post", body: values })
+    .then((json) => json)
+    .catch((e) => e);
+};
+
+export const updateExternalSystem = ({ id, values }) => {
+  return fetchRequest(`${URL}/` + id, {
+    method: "put",
+    body: values,
+  })
+    .then((json) => json)
+    .catch((e) => e);
+};

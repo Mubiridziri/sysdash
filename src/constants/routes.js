@@ -1,15 +1,8 @@
-export const ADMINISTRATION = "administration";
+export const EXTERNAL_SYSTEMS = "external_systems";
 
 export const ROUTES = [
   {
-    title: "Администрирование",
-    id: ADMINISTRATION,
-    path: `/${ADMINISTRATION}`,
-    childRoutes: [
-      {
-        title: "Внешние системы",
-        id: "externalSystems",
-      },
-    ],
+    id: EXTERNAL_SYSTEMS,
+    path: `/${EXTERNAL_SYSTEMS}`,
   },
 ];

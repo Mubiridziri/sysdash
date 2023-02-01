@@ -9,16 +9,15 @@ import {
 
 import { Box, Toolbar } from "@mui/material";
 
-import HelpPage from "pages/HelpPage";
 import ExternalSystemsPage from "pages/catalogs/ExternalSystemsPage";
 
 import Header from "components/Header";
 
-import { ROUTES } from "constants/routes";
+import { EXTERNAL_SYSTEMS } from "constants/routes";
 import { LIGHT_THEME } from "constants/themes";
 
 const routeComponents = {
-  externalSystems: ExternalSystemsPage,
+  external_systems: ExternalSystemsPage,
 };
 
 const App = () => {
@@ -26,10 +25,6 @@ const App = () => {
 
   const bgColorMain =
     theme.palette.mode === LIGHT_THEME ? "#F5F5F5" : "#1D1F29";
-
-  const filterRoutes = ROUTES.filter((route) => {
-    return !!route.childRoutes.length;
-  });
 
   return (
     <Router>
@@ -52,24 +47,15 @@ const App = () => {
           >
             <Toolbar />
             <Switch>
-              {filterRoutes.map((item) => (
-                <Route
-                  exact
-                  key={item.id}
-                  path={item.path}
-                  component={HelpPage}
-                />
-              ))}
-              {ROUTES.map((item) =>
-                item.childRoutes.map((route) => (
-                  <Route
-                    key={route.id}
-                    path={`${item.path}/${route.id}`}
-                    render={routeComponents[route.id]}
-                  />
-                ))
-              )}
-              <Route path="/" render={() => <Redirect to="/administration" />} />
+              <Route
+                key={EXTERNAL_SYSTEMS}
+                path={`/${EXTERNAL_SYSTEMS}`}
+                render={routeComponents[EXTERNAL_SYSTEMS]}
+              />
+              <Route
+                path="/"
+                render={() => <Redirect to={`/${EXTERNAL_SYSTEMS}`} />}
+              />
             </Switch>
           </Box>
         </>
