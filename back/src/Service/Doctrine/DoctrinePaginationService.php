@@ -18,9 +18,9 @@ class DoctrinePaginationService
         $this->manager = $manager;
     }
 
-    public function getPaginationEntries(string $entityName, int $page, int $limit, QueryBuilder $queryBuilder = null)
+    public function getPaginationEntries(string $entityName, int $page, int $limit, QueryBuilder $query = null)
     {
-        if($queryBuilder) {
+        if(!$query) {
             $query = $this->manager->getRepository($entityName)->createQueryBuilder('a');
         }
 
