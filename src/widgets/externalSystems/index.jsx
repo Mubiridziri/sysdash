@@ -32,6 +32,7 @@ import { loadExternalSystem } from "services/catalogs/externalSystems";
 import { required } from "helpers/formValidators";
 import Button from "components/Button";
 import Icon from "components/Icon";
+import { resetParams } from "actions/requestParams";
 
 export const PATH = "/external_systems";
 
@@ -74,6 +75,7 @@ const ExternalSystemsWidget = (props) => {
   const handleChange = (event, newValue) => {
     if (newValue !== null) {
       setValue(newValue);
+      dispatch(resetParams())
     }
   };
 
