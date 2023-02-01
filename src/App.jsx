@@ -10,7 +10,7 @@ import {
 import { Box, Toolbar } from "@mui/material";
 
 import HelpPage from "pages/HelpPage";
-import DriversPage from "pages/catalogs/DriversPage";
+import ExternalSystemsPage from "pages/catalogs/ExternalSystemsPage";
 
 import Header from "components/Header";
 
@@ -18,7 +18,7 @@ import { ROUTES } from "constants/routes";
 import { LIGHT_THEME } from "constants/themes";
 
 const routeComponents = {
-  drivers: DriversPage,
+  externalSystems: ExternalSystemsPage,
 };
 
 const App = () => {
@@ -69,7 +69,7 @@ const App = () => {
                   />
                 ))
               )}
-              <Route path="/" render={() => <Redirect to="/catalogs" />} />
+              <Route path="/" render={() => <Redirect to="/administration" />} />
             </Switch>
           </Box>
         </>

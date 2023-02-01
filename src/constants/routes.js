@@ -1,14 +1,14 @@
-export const CATALOGS = "catalogs";
+export const ADMINISTRATION = "administration";
 
 export const ROUTES = [
   {
-    title: "Справочники",
-    id: CATALOGS,
-    path: `/${CATALOGS}`,
+    title: "Администрирование",
+    id: ADMINISTRATION,
+    path: `/${ADMINISTRATION}`,
     childRoutes: [
       {
-        title: "Водители",
-        id: "drivers",
+        title: "Внешние системы",
+        id: "externalSystems",
       },
     ],
   },

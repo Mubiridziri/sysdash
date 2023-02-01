@@ -1,15 +1,15 @@
 import { isLoaded } from "actions";
-import { LOAD_DRIVERS } from "actions/catalogs/drivers/types";
+import { LOAD_EXTERNAL_SYSTEMS } from "actions/catalogs/externalSystems/types";
 
 const initialState = { entries: [], total: 0, loading: false };
 
-const drivers = (state = initialState, { type, payload }) => {
+const externalSystems = (state = initialState, { type, payload }) => {
   switch (type) {
-    case LOAD_DRIVERS: {
+    case LOAD_EXTERNAL_SYSTEMS: {
       const newState = { ...state, loading: true };
       return newState;
     }
-    case isLoaded(LOAD_DRIVERS, true): {
+    case isLoaded(LOAD_EXTERNAL_SYSTEMS, true): {
       const newState = {
         ...state,
         total: payload.total,
@@ -18,7 +18,7 @@ const drivers = (state = initialState, { type, payload }) => {
       };
       return newState;
     }
-    case isLoaded(LOAD_DRIVERS, false): {
+    case isLoaded(LOAD_EXTERNAL_SYSTEMS, false): {
       const newState = { ...state, loading: false };
       return newState;
     }
@@ -28,4 +28,4 @@ const drivers = (state = initialState, { type, payload }) => {
   }
 };
 
-export default drivers;
+export default externalSystems;
