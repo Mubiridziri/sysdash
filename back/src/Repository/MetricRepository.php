@@ -27,6 +27,6 @@ class MetricRepository extends ServiceEntityRepository
         $query->where('a.service = :service')
             ->setParameter('service', $service);
 
-        return $this->paginator->getPaginationEntries(Metric::class, $page, $limit);
+        return $this->paginator->getPaginationEntries(Metric::class, $page, $limit, $query);
     }
 }

@@ -6,9 +6,6 @@ use App\Entity\Log;
 use App\Entity\Service;
 use App\Service\Doctrine\DoctrinePaginationService;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 
 class LogRepository extends ServiceEntityRepository
@@ -24,9 +21,9 @@ class LogRepository extends ServiceEntityRepository
     public function getPaginatedLogs(Service $service, int $page, int $limit): array
     {
         $query = $this->createQueryBuilder('a');
-        $query->where('a.service = :service')
+        $query->andWhere('a.service = :service')
             ->setParameter('service', $service);
 
-        return $this->paginator->getPaginationEntries(Log::class, $page, $limit);
+        return $this->paginator->getPaginationEntries(Log::class, $page, $limit, $query);
     }
 }

@@ -8,6 +8,7 @@
 #  else
 #    back/bin/console doctrine:migrations:migrate -n
 #fi
+chown -R www-data:www-data back/var/cache/
 
 echo "----------------------------------------"
 echo -e 'Starting complete!'
