@@ -135,7 +135,7 @@ const ExternalSystemsWidget = ({ isCreate }) => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 1,
+              mb: 2,
             }}
           >
             <Box component="div" sx={{ display: "flex", alignItems: "center" }}>
@@ -162,8 +162,7 @@ const ExternalSystemsWidget = ({ isCreate }) => {
                 direction="row"
                 alignItems="center"
                 sx={{
-                  height: "54px",
-                  padding: "6px",
+                  height: "38px",
                   borderRadius: "7px",
                   bgcolor: (theme) =>
                     theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",

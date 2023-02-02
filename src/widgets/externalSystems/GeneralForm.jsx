@@ -91,7 +91,7 @@ const GeneralForm = ({
                 sx={{
                   maxHeight: `calc(100vh - ${id ? 234 : 172}px)`,
                   overflow: "auto",
-                  padding: "10px",
+                  padding: "0 10px 5px 10px",
                 }}
               >
                 <Card
