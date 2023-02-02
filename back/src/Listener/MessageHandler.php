@@ -42,9 +42,11 @@ class MessageHandler
         //Подразумеваем, что набор полей в будущем будет координально отличаться
         if($message instanceof MetricQueueMessageModel) {
             $metric = new Metric();
-            $metric->setMessage($message->getMessage());
+            $metric->setName($message->getName());
             $metric->setService($service);
             $metric->setType($message->getType());
+            $metric->setValue($message->getValue());
+            $metric->setExtra($message->getExtra());
             $this->manager->persist($metric);
         }
 

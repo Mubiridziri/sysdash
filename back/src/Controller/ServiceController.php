@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Service;
+use App\Service\Doctrine\DoctrineMasterEntityService;
 use App\Service\Doctrine\DoctrinePaginationService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,11 +17,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ServiceController extends AbstractController
 {
     #[Route("", methods: ["GET"])]
-    public function list(ManagerRegistry $managerRegistry, DoctrinePaginationService $paginationService, Request $request): JsonResponse
+    public function list(DoctrineMasterEntityService $entityService, Request $request): JsonResponse
     {
-        $page = $request->query->get('page', DoctrinePaginationService::DEFAULT_PAGE);
-        $limit = $request->query->get('limit', DoctrinePaginationService::DEFAULT_LIMIT);
-        return $this->json($paginationService->getPaginationEntries(Service::class, $page, $limit));
+        return $this->json($entityService->getData(Service::class, $request));
     }
 
     #[Route("", methods: ["POST"])]

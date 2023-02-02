@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Log;
 use App\Entity\Service;
+use App\Service\Doctrine\DoctrineMasterEntityService;
 use App\Service\Doctrine\DoctrinePaginationService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +18,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class LogController extends AbstractController
 {
     #[Route("/{serviceId}", methods: ["GET"])]
-    public function list(int $serviceId, ManagerRegistry $managerRegistry, Request $request): JsonResponse
+    public function list(int $serviceId, ManagerRegistry $managerRegistry, DoctrineMasterEntityService $entityService, Request $request): JsonResponse
     {
         $doctrineManager = $managerRegistry->getManager();
         $service = $doctrineManager->getRepository(Service::class)->findOneBy([
@@ -27,10 +28,8 @@ class LogController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $page = $request->query->get('page', DoctrinePaginationService::DEFAULT_PAGE);
-        $limit = $request->query->get('limit', DoctrinePaginationService::DEFAULT_LIMIT);
-
-        $logs = $managerRegistry->getRepository(Log::class)->getPaginatedLogs($service, $page, $limit);
+        $query = $managerRegistry->getRepository(Log::class)->getDefaultQuery($service);
+        $logs = $entityService->getData(Log::class, $request, $query);
         return $this->json($logs, Response::HTTP_OK, [], [
             AbstractNormalizer::GROUPS => ['View']
         ]);

@@ -11,19 +11,8 @@ class DoctrinePaginationService
     const DEFAULT_PAGE = 1;
     const DEFAULT_LIMIT = 10;
 
-    private EntityManagerInterface $manager;
-
-    public function __construct(EntityManagerInterface $manager)
+    public function getPagination(int $page, int $limit, QueryBuilder $query)
     {
-        $this->manager = $manager;
-    }
-
-    public function getPaginationEntries(string $entityName, int $page, int $limit, QueryBuilder $query = null)
-    {
-        if(!$query) {
-            $query = $this->manager->getRepository($entityName)->createQueryBuilder('a');
-        }
-
         $paginator = $this->getPaginator($query, $page, $limit);
         return [
             'entries' => $paginator->getQuery()->getResult(),

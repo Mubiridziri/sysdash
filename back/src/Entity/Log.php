@@ -30,6 +30,16 @@ class Log
     #[Groups(['View'])]
     private string $type;
 
+    #[ORM\Column(type: "datetime", nullable: true)]
+    #[Groups(['View'])]
+    private \DateTime $createdAt;
+
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
     /**
      * @return int|null
      */
@@ -92,5 +102,21 @@ class Log
     public function setService(Service $service): void
     {
         $this->service = $service;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 }

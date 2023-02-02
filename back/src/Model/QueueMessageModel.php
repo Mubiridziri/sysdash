@@ -11,27 +11,10 @@ class QueueMessageModel
 
     private string $type;
 
-    public function __construct(string $serviceToken, string $message, string $type)
+    public function __construct(string $serviceToken, string $type)
     {
         $this->serviceToken = $serviceToken;
-        $this->message = $message;
         $this->type = $type;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * @param mixed $message
-     */
-    public function setMessage($message): void
-    {
-        $this->message = $message;
     }
 
     /**

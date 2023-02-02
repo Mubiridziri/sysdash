@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\PublicAPI;
+namespace App\Controller\External;
 
 use App\Entity\Service;
 use App\Model\LogEventModel;
@@ -29,7 +29,11 @@ class EventController extends AbstractController
         if (!$service) {
             throw $this->createNotFoundException("Service doesnt exist in system");
         }
-        $logQueueModel = new LogQueueMessageModel($service->getToken(), $event->getMessage(), $event->getType());
+        $logQueueModel = new LogQueueMessageModel(
+            $service->getToken(),
+            $event->getType(),
+            $event->getMessage()
+        );
 
         $bus->dispatch($logQueueModel);
         return $this->json($event);
@@ -46,7 +50,14 @@ class EventController extends AbstractController
         if (!$service) {
             throw $this->createNotFoundException("Service doesnt exist in system");
         }
-        $metricQueueModel = new MetricQueueMessageModel($service->getToken(), $event->getMessage(), $event->getType());
+        //TODO Нельзя, чтобы модель из реквеста отправлялась в очередь, но при этом и данный подход плох
+        $metricQueueModel = new MetricQueueMessageModel(
+            $service->getToken(),
+            $event->getType(),
+            $event->getName(),
+            $event->getValue(),
+            $event->getExtra()
+        );
 
         $bus->dispatch($metricQueueModel);
         return $this->json($event);

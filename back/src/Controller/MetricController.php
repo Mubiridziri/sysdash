@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Log;
 use App\Entity\Metric;
 use App\Entity\Service;
+use App\Service\Doctrine\DoctrineMasterEntityService;
 use App\Service\Doctrine\DoctrinePaginationService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +19,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class MetricController extends AbstractController
 {
     #[Route("/{serviceId}", methods: ["GET"])]
-    public function list(int $serviceId, ManagerRegistry $managerRegistry, Request $request): JsonResponse
+    public function list(int $serviceId, ManagerRegistry $managerRegistry, DoctrineMasterEntityService $entityService, Request $request): JsonResponse
     {
         $doctrineManager = $managerRegistry->getManager();
         $service = $doctrineManager->getRepository(Service::class)->findOneBy([
@@ -27,11 +28,10 @@ class MetricController extends AbstractController
         if (!$service) {
             throw $this->createNotFoundException();
         }
-        $page = $request->query->get('page', DoctrinePaginationService::DEFAULT_PAGE);
-        $limit = $request->query->get('limit', DoctrinePaginationService::DEFAULT_LIMIT);
 
-        $logs = $managerRegistry->getRepository(Metric::class)->getPaginatedLogs($service, $page, $limit);
-        return $this->json($logs,  Response::HTTP_OK, [], [
+        $query = $managerRegistry->getRepository(Metric::class)->getDefaultQuery($service);
+        $metrics = $entityService->getData(Metric::class, $request, $query);
+        return $this->json($metrics,  Response::HTTP_OK, [], [
             AbstractNormalizer::GROUPS => ['View']
         ]);
     }

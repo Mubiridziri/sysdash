@@ -6,8 +6,6 @@ class EventModel
 {
     private string $serviceToken;
 
-    private string $message;
-
     private string $type;
 
     /**
@@ -24,22 +22,6 @@ class EventModel
     public function setServiceToken(string $serviceToken): void
     {
         $this->serviceToken = $serviceToken;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * @param string $message
-     */
-    public function setMessage(string $message): void
-    {
-        $this->message = $message;
     }
 
     /**

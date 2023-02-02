@@ -33,6 +33,7 @@ import { required } from "helpers/formValidators";
 import Button from "components/Button";
 import Icon from "components/Icon";
 import { resetParams } from "actions/requestParams";
+import { MESSAGES_COLUMNS} from "constants/columns";
 
 export const PATH = "/external_systems";
 
@@ -87,11 +88,6 @@ const ExternalSystemsWidget = (props) => {
     setOpenFilter(null);
   };
 
-  const columns = [
-    { id: "message", label: "Сообщение" },
-    { id: "type", label: "Тип" },
-  ];
-
   const fields = [
     { id: "title", label: "Наименование", validate: required },
     { id: "description", label: "Описание", validate: required },
@@ -100,9 +96,9 @@ const ExternalSystemsWidget = (props) => {
   const renderTable = () => {
     switch (value) {
       case "logs":
-        return <Logs serviceId={serviceId} columns={columns} />;
+        return <Logs serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />;
       case "metrics":
-        return <Metrics serviceId={serviceId} columns={columns} />;
+        return <Metrics serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />;
       default:
         return null;
     }
@@ -199,7 +195,7 @@ const ExternalSystemsWidget = (props) => {
               <FilterPopover
                 open={openFilter}
                 onClose={onCloseFilter}
-                fields={columns}
+                fields={MESSAGES_COLUMNS[value]}
                 loadData={value === "logs" ? loadLogs : loadMetrics}
                 loadId={serviceId}
               />

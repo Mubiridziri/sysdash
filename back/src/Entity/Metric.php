@@ -20,11 +20,19 @@ class Metric
 
     #[ORM\Column(type: 'text')]
     #[Groups(['View'])]
-    private string $message;
+    private string $name;
+
+    #[ORM\Column(type: 'float')]
+    #[Groups(['View'])]
+    private ?float $value;
 
     #[ORM\Column(type: 'string')]
     #[Groups(['View'])]
     private string $type;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(['View'])]
+    private ?array $extra;
 
     /**
      * @return int|null
@@ -61,22 +69,6 @@ class Metric
     /**
      * @return string
      */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    /**
-     * @param string $message
-     */
-    public function setMessage(string $message): void
-    {
-        $this->message = $message;
-    }
-
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
@@ -88,5 +80,53 @@ class Metric
     public function setType(string $type): void
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return ?array
+     */
+    public function getExtra(): ?array
+    {
+        return $this->extra;
+    }
+
+    /**
+     * @param ?array $extra
+     */
+    public function setExtra(?array $extra): void
+    {
+        $this->extra = $extra;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getValue(): ?float
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param float|null $value
+     */
+    public function setValue(?float $value): void
+    {
+        $this->value = $value;
     }
 }
