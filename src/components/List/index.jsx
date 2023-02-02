@@ -16,6 +16,7 @@ const List = ({
   activeItem,
   subheader,
   onAdd,
+  handleChangePagination,
 }) => {
   const dispatch = useDispatch();
   const [selected, setSelected] = React.useState(null);
@@ -23,10 +24,10 @@ const List = ({
   useEffect(() => {
     setSelected(Number(activeItem));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activeItem]);
 
   const onChangePagination = (event, page) => {
-    /* handleChangePagination(); */
+    handleChangePagination();
     setSelected(null);
     dispatch(loadData({ page, limit: 10 }));
   };

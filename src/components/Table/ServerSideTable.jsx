@@ -192,15 +192,27 @@ const ServerSideTable = ({
       );
     } else {
       const filter = getFilterParams(filterParams);
-      dispatch(
-        loadData({
-          ...paginationParams,
-          column: property,
-          sort: newOrder,
-          ...searchParams,
-          ...filter,
-        })
-      );
+      if (loadId) {
+        dispatch(
+          loadData(loadId, {
+            ...paginationParams,
+            column: property,
+            sort: newOrder,
+            ...searchParams,
+            ...filter,
+          })
+        );
+      } else {
+        dispatch(
+          loadData({
+            ...paginationParams,
+            column: property,
+            sort: newOrder,
+            ...searchParams,
+            ...filter,
+          })
+        );
+      }
     }
     dispatch(setSort({ column: property, sort: newOrder }));
   };

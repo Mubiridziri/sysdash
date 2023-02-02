@@ -28,9 +28,11 @@ const Header = ({ user }) => {
           }}
           disableGutters
         >
-          <div className="header__logo"></div>
-          <Box component="div" sx={{ fontSize: 18 }}>
-            System Dashboard
+          <Box component="div" sx={{ display: "flex", alignItems: "center" }}>
+            <div className="header__logo"></div>
+            <Box component="div" sx={{ fontSize: 18 }}>
+              System Dashboard
+            </Box>
           </Box>
           <NavMenu user={user} />
           <Box component="div" sx={{ display: "flex" }}>

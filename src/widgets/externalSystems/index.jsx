@@ -14,24 +14,27 @@ import {
   createExternalSystem,
   updateExternalSystem,
 } from "actions/catalogs/externalSystems";
-import Panel from "components/Panel";
-import List from "components/List";
-import { INITIAL_VALUES_STATE_PAGE } from "constants/request";
-import FilterPopover from "components/Filter/FilterPopover";
-import IconButton from "components/IconButton";
-import { LIGHT_THEME } from "constants/themes";
-import Logs from "./Logs";
-import Metrics from "./Metrics";
-import { DARK_MAIN_COLOR } from "themes";
 import { loadLogs } from "actions/catalogs/logs";
 import { loadMetrics } from "actions/catalogs/metrics";
-import { openModal } from "actions/modals";
-import { MODAL_STATE } from "components/Modal";
 import { resetParams } from "actions/requestParams";
-import { MESSAGES_COLUMNS } from "constants/columns";
+
+import Panel from "components/Panel";
+import List from "components/List";
+import FilterPopover from "components/Filter/FilterPopover";
+import IconButton from "components/IconButton";
+
 import GeneralForm from "./GeneralForm";
+import Logs from "./Logs";
+import Metrics from "./Metrics";
+
+import { DARK_MAIN_COLOR } from "themes";
+import { LIGHT_THEME } from "constants/themes";
+import { MESSAGES_COLUMNS } from "constants/columns";
+import { INITIAL_VALUES_STATE_PAGE } from "constants/request";
 
 export const PATH = "/external_systems";
+
+const VISIBLE_FILTER = ["logs", "metrics"];
 
 const EXTERNAL_SYSTEMS_GROUP = [
   { id: "general", label: "Общее" },
@@ -50,9 +53,7 @@ const ExternalSystemsWidget = ({ isCreate }) => {
 
   const [value, setValue] = React.useState("general");
   const [openFilter, setOpenFilter] = React.useState(null);
-  const [copiedToken, setCopiedToken] = React.useState(false);
 
-  console.log("isCreate", isCreate);
   useEffect(() => {
     dispatch(loadExternalSystems(INITIAL_VALUES_STATE_PAGE));
   }, [dispatch]);
@@ -70,6 +71,10 @@ const ExternalSystemsWidget = ({ isCreate }) => {
       setValue(newValue);
       dispatch(resetParams());
     }
+  };
+
+  const handleChangePagination = () => {
+    history.push(PATH);
   };
 
   const onOpenFilter = (event) => {
@@ -93,6 +98,8 @@ const ExternalSystemsWidget = ({ isCreate }) => {
             initialValues={currentExternalSystem}
             createAction={createExternalSystem}
             updateAction={updateExternalSystem}
+            path={PATH}
+            isEdit
           />
         );
       case "logs":
@@ -101,6 +108,8 @@ const ExternalSystemsWidget = ({ isCreate }) => {
         return (
           <Metrics serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />
         );
+      case "system":
+        return "В разработке";
       default:
         return null;
     }
@@ -113,13 +122,11 @@ const ExternalSystemsWidget = ({ isCreate }) => {
           loading={externalSystems.loading}
           createAction={createExternalSystem}
           updateAction={updateExternalSystem}
+          path={PATH}
         />
       );
     }
     if (serviceId) {
-      /*  const currentExternalSystem = externalSystems.entries.find(
-        (item) => item.id === Number(serviceId)
-      ); */
       return (
         <>
           <Box
@@ -150,62 +157,50 @@ const ExternalSystemsWidget = ({ isCreate }) => {
                 ))}
               </ToggleButtonGroup>
             </Box>
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{
-                height: "54px",
-                padding: "6px",
-                borderRadius: "7px",
-                bgcolor: (theme) =>
-                  theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",
-              }}
-            >
-              {/* <Button
-                variant="outlined"
-                sx={{ height: 38 }}
-                onClick={() => {
-                  navigator.clipboard.writeText(currentExternalSystem.token);
-                  setCopiedToken(true);
-                }}
-              >
-                {copiedToken ? (
-                  <Icon name="success" color="success" />
-                ) : (
-                  "Токен"
-                )}
-              </Button> */}
-              <Badge
-                badgeContent={Object.keys(filterParams).length}
-                color="secondary"
+            {VISIBLE_FILTER.includes(value) ? (
+              <Stack
+                direction="row"
+                alignItems="center"
                 sx={{
-                  "& .MuiBadge-badge": {
-                    right: 10,
-                    top: 8,
-                  },
+                  height: "54px",
+                  padding: "6px",
+                  borderRadius: "7px",
+                  bgcolor: (theme) =>
+                    theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",
                 }}
               >
-                <IconButton
-                  name="filter"
-                  title="Фильтрация"
-                  size="small"
+                <Badge
+                  badgeContent={Object.keys(filterParams).length}
+                  color="secondary"
                   sx={{
-                    color: (theme) =>
-                      Object.keys(filterParams).length
-                        ? DARK_MAIN_COLOR
-                        : theme.palette.secondary.main,
+                    "& .MuiBadge-badge": {
+                      right: 10,
+                      top: 8,
+                    },
                   }}
-                  onClick={onOpenFilter}
+                >
+                  <IconButton
+                    name="filter"
+                    title="Фильтрация"
+                    size="small"
+                    sx={{
+                      color: (theme) =>
+                        Object.keys(filterParams).length
+                          ? DARK_MAIN_COLOR
+                          : theme.palette.secondary.main,
+                    }}
+                    onClick={onOpenFilter}
+                  />
+                </Badge>
+                <FilterPopover
+                  open={openFilter}
+                  onClose={onCloseFilter}
+                  fields={MESSAGES_COLUMNS[value]}
+                  loadData={value === "logs" ? loadLogs : loadMetrics}
+                  loadId={serviceId}
                 />
-              </Badge>
-              <FilterPopover
-                open={openFilter}
-                onClose={onCloseFilter}
-                fields={MESSAGES_COLUMNS[value]}
-                loadData={value === "logs" ? loadLogs : loadMetrics}
-                loadId={serviceId}
-              />
-            </Stack>
+              </Stack>
+            ) : null}
           </Box>
           {renderTab()}
         </>
@@ -236,6 +231,7 @@ const ExternalSystemsWidget = ({ isCreate }) => {
               subheader="Внешние системы"
               activeItem={serviceId}
               onAdd={onAdd}
+              handleChangePagination={handleChangePagination}
             />
           </Panel>
         </Box>
@@ -250,13 +246,6 @@ const ExternalSystemsWidget = ({ isCreate }) => {
           <Panel>{renderContent()}</Panel>
         </Box>
       </Stack>
-      {/*       <WidgetDefaultFormModal
-        modalName="external-system-modal"
-        fields={fields}
-        createAction={createExternalSystem}
-        updateAction={updateExternalSystem}
-        loadFetchDataById={loadExternalSystem}
-      /> */}
     </>
   );
 };

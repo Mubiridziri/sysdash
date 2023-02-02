@@ -48,6 +48,8 @@ import SourceOutlinedIcon from "@mui/icons-material/SourceOutlined";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const iconTypes = {
   light: LightIcon,
@@ -98,6 +100,8 @@ const iconTypes = {
   staff: BadgeOutlinedIcon,
   cancel: CancelIcon,
   success: CheckCircleOutlineIcon,
+  help: HelpOutlineIcon,
+  copy: ContentCopyIcon,
 };
 
 const Icon = ({ name, title, ...props }) => {

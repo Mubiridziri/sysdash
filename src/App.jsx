@@ -13,7 +13,7 @@ import ExternalSystemsPage from "pages/catalogs/ExternalSystemsPage";
 
 import Header from "components/Header";
 
-import { EXTERNAL_SYSTEMS } from "constants/routes";
+import { EXTERNAL_SYSTEMS, ROUTES } from "constants/routes";
 import { LIGHT_THEME } from "constants/themes";
 
 const routeComponents = {
@@ -47,11 +47,13 @@ const App = () => {
           >
             <Toolbar />
             <Switch>
-              <Route
-                key={EXTERNAL_SYSTEMS}
-                path={`/${EXTERNAL_SYSTEMS}`}
-                render={routeComponents[EXTERNAL_SYSTEMS]}
-              />
+              {ROUTES.map((route) => (
+                <Route
+                  key={route.id}
+                  path={route.path}
+                  render={routeComponents[route.id]}
+                />
+              ))}
               <Route
                 path="/"
                 render={() => <Redirect to={`/${EXTERNAL_SYSTEMS}`} />}

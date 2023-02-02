@@ -26,7 +26,7 @@ export function* createExternalSystem({
     !createdExternalSystem.error
   ) {
     yield dispatchSuccess(type, createdExternalSystem);
-    resolve();
+    resolve({ serviceId: createdExternalSystem.id });
   } else {
     yield dispatchFailed(type);
     reject(

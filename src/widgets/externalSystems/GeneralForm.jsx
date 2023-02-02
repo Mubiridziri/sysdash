@@ -1,8 +1,10 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { FORM_ERROR } from "final-form";
 import { Field, Form } from "react-final-form";
-import { Box, Card, CardContent, InputLabel } from "@mui/material";
+import { Box, Card, CardContent } from "@mui/material";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import Input from "components/FormFields/Input";
 import LoadingButton from "components/LoagingButton";
@@ -10,21 +12,32 @@ import Button from "components/Button";
 import StackButton from "components/StackButton";
 import FormHelperText from "components/FormHelperText";
 import LoadingBlock from "components/LoadingBlock";
+import withAlert from "components/HOC/withAlert";
+import InputLabel from "components/InputLabel";
+import InputLabelWithHelp from "components/InputLabelWithHelp";
+import Icon from "components/Icon";
+
+import { formatOnlyNumber } from "helpers/formatField";
+import { parseNumber } from "helpers/parse";
 import { required } from "helpers/formValidators";
+
+import {
+  SUCCESS_SAVE_MESSAGE,
+  SUCCESS_COPY_MESSAGE,
+} from "constants/alertMessages";
 
 const GeneralForm = ({
   id,
-  isView,
   isEdit,
   loading,
   initialValues,
   createAction,
   updateAction,
-  onSuccess,
-  onEdit,
-  readOnly,
+  onOpenAlert,
+  path,
 }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const onSubmit = (values) => {
     if (isEdit) {
@@ -33,7 +46,7 @@ const GeneralForm = ({
           updateAction(id, values, {
             resolve: () => {
               resolve();
-              onSuccess();
+              onOpenAlert("success", SUCCESS_SAVE_MESSAGE);
             },
             reject: (error) => {
               resolve({ [FORM_ERROR]: error });
@@ -45,9 +58,10 @@ const GeneralForm = ({
     return new Promise((resolve) => {
       dispatch(
         createAction(values, {
-          resolve: () => {
+          resolve: ({ serviceId }) => {
             resolve();
-            onSuccess();
+            onOpenAlert("success", SUCCESS_SAVE_MESSAGE);
+            history.push(`${path}/${serviceId}`);
           },
           reject: (error) => {
             resolve({ [FORM_ERROR]: error });
@@ -75,25 +89,22 @@ const GeneralForm = ({
               <Box
                 component="div"
                 sx={{
-                  maxHeight: `calc(100vh - ${id ? 234 : 170}px)`,
+                  maxHeight: `calc(100vh - ${id ? 234 : 172}px)`,
                   overflow: "auto",
                   padding: "10px",
                 }}
               >
-                <Card raised sx={{ mb: 1, borderRadius: 4 }}>
+                <Card
+                  sx={{
+                    mb: 1,
+                    borderRadius: 4,
+                  }}
+                >
                   <CardContent>
                     <Box component="div" sx={{ mb: 1, fontWeight: 700 }}>
                       Информация
                     </Box>
-                    <InputLabel
-                      shrink
-                      sx={{
-                        fontSize: 18,
-                        color: (theme) => theme.palette.primary.main,
-                      }}
-                    >
-                      Наименование
-                    </InputLabel>
+                    <InputLabel label="Наименование" />
                     <Field name="title" validate={required}>
                       {({ input, meta }) => (
                         <Input
@@ -102,21 +113,10 @@ const GeneralForm = ({
                           variant="outlined"
                           size="small"
                           fullWidth
-                          InputProps={{
-                            disabled: isView,
-                          }}
                         />
                       )}
                     </Field>
-                    <InputLabel
-                      shrink
-                      sx={{
-                        fontSize: 18,
-                        color: (theme) => theme.palette.primary.main,
-                      }}
-                    >
-                      Описание
-                    </InputLabel>
+                    <InputLabel label="Описание" />
                     <Field name="description" validate={required}>
                       {({ input, meta }) => (
                         <Input
@@ -125,21 +125,24 @@ const GeneralForm = ({
                           variant="outlined"
                           size="small"
                           fullWidth
-                          InputProps={{
-                            disabled: isView,
+                          multiline
+                          sx={{
+                            "& .MuiOutlinedInput-root.MuiInputBase-sizeSmall": {
+                              p: "13.5px 10px !important",
+                            },
+                            "& .MuiInputBase-input.MuiInputBase-inputSizeSmall":
+                              {
+                                p: "0 0 10px 0 !important",
+                              },
                           }}
                         />
                       )}
                     </Field>
-                    <InputLabel
-                      shrink
-                      sx={{
-                        fontSize: 18,
-                        color: (theme) => theme.palette.primary.main,
-                      }}
-                    >
-                      Адрес
-                    </InputLabel>
+                    <InputLabelWithHelp
+                      label="Адрес"
+                      iconName="help"
+                      tooltipTitle="Укажите адрес сервера, на котором находится эта внешняя система."
+                    />
                     <Field name="address" validate={required}>
                       {({ input, meta }) => (
                         <Input
@@ -148,30 +151,25 @@ const GeneralForm = ({
                           variant="outlined"
                           size="small"
                           fullWidth
-                          InputProps={{
-                            disabled: isView,
-                          }}
                           sx={{ mb: 0 }}
                         />
                       )}
                     </Field>
                   </CardContent>
                 </Card>
-                <Card raised sx={{ mb: 1, borderRadius: 4 }}>
+                <Card sx={{ mb: 1, borderRadius: 4 }}>
                   <CardContent>
                     <Box component="div" sx={{ mb: 1, fontWeight: 700 }}>
                       Архивирование
                     </Box>
-                    <InputLabel
-                      shrink
-                      sx={{
-                        fontSize: 18,
-                        color: (theme) => theme.palette.primary.main,
-                      }}
+                    <InputLabel label="Период архивирования (дн)" />
+
+                    <Field
+                      name="archivingPeriod"
+                      format={formatOnlyNumber}
+                      parse={parseNumber}
+                      validate={required}
                     >
-                      {"Период архивирования (дн)"}
-                    </InputLabel>
-                    <Field name="archivingPeriod" validate={required}>
                       {({ input, meta }) => (
                         <Input
                           input={input}
@@ -179,49 +177,55 @@ const GeneralForm = ({
                           variant="outlined"
                           size="small"
                           fullWidth
-                          InputProps={{
-                            disabled: isView,
-                          }}
                           sx={{ mb: 0 }}
                         />
                       )}
                     </Field>
                   </CardContent>
                 </Card>
-                <Card raised sx={{ borderRadius: 4 }}>
-                  <CardContent>
-                    <InputLabel
-                      shrink
-                      sx={{
-                        fontSize: 18,
-                        color: (theme) => theme.palette.primary.main,
-                      }}
-                    >
-                      Токен
-                    </InputLabel>
-                    <Field name="token">
-                      {({ input, meta }) => (
-                        <Input
-                          input={input}
-                          meta={meta}
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          InputProps={{
-                            disabled: true,
-                          }}
-                          sx={{ mb: 0 }}
-                        />
-                      )}
-                    </Field>
-                  </CardContent>
-                </Card>
+                {id ? (
+                  <Card sx={{ borderRadius: 4 }}>
+                    <CardContent>
+                      <InputLabel label="Токен" />
+                      <Field name="token">
+                        {({ input, meta }) => (
+                          <CopyToClipboard
+                            text={initialValues?.token ?? ""}
+                            onCopy={() => {
+                              onOpenAlert("success", SUCCESS_COPY_MESSAGE);
+                            }}
+                          >
+                            <Input
+                              input={input}
+                              meta={meta}
+                              variant="outlined"
+                              size="small"
+                              fullWidth
+                              InputProps={{
+                                disabled: true,
+                                endAdornment: <Icon name="copy" />,
+                              }}
+                              sx={{
+                                input: { cursor: "pointer" },
+                                "& .MuiInputBase-adornedEnd.MuiInputBase-sizeSmall:hover":
+                                  {
+                                    background: (theme) =>
+                                      theme.palette.success.light,
+                                  },
+                              }}
+                            />
+                          </CopyToClipboard>
+                        )}
+                      </Field>
+                    </CardContent>
+                  </Card>
+                ) : null}
               </Box>
             </LoadingBlock>
             <StackButton>
               <>
                 <LoadingButton
-                  disabled={pristine || !validSaveBtn || isView}
+                  disabled={pristine || !validSaveBtn}
                   loading={submitting}
                   variant="contained"
                   type="submit"
@@ -231,7 +235,7 @@ const GeneralForm = ({
                   Применить
                 </LoadingButton>
                 <Button
-                  disabled={isView || pristine || submitting}
+                  disabled={pristine || submitting}
                   variant="outlined"
                   size="small"
                   onClick={form.reset}
@@ -252,12 +256,8 @@ const GeneralForm = ({
 };
 
 GeneralForm.defaultProps = {
-  fields: [],
-  onSuccess: () => {},
   initialValues: {},
-  isView: false,
   isEdit: false,
-  readOnly: false,
 };
 
-export default GeneralForm;
+export default withAlert(GeneralForm);
