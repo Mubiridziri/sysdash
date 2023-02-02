@@ -25,6 +25,14 @@ class Service
     #[Groups(['Edit'])]
     private ?string $description;
 
+    #[ORM\Column(type: "string", nullable: true)]
+    #[Groups(['Edit'])]
+    private ?string $address;
+
+    #[ORM\Column(type: "integer", nullable: true)]
+    #[Groups(['Edit'])]
+    private ?int $archivingPeriod;
+
     #[ORM\Column(type: "datetime")]
     private \DateTime $createdAt;
 
@@ -116,5 +124,37 @@ class Service
     public function __toString(): string
     {
         return $this->title;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string|null $address
+     */
+    public function setAddress(?string $address): void
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getArchivingPeriod(): ?int
+    {
+        return $this->archivingPeriod;
+    }
+
+    /**
+     * @param int|null $archivingPeriod
+     */
+    public function setArchivingPeriod(?int $archivingPeriod): void
+    {
+        $this->archivingPeriod = $archivingPeriod;
     }
 }

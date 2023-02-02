@@ -37,6 +37,15 @@ class Metric
     #[Groups(['View', 'Create'])]
     private ?array $extra;
 
+    #[ORM\Column(type: "datetime")]
+    #[Groups(['View'])]
+    private \DateTime $createdAt;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
     /**
      * @return int|null
      */
@@ -147,5 +156,21 @@ class Metric
     public function setServiceToken(?string $serviceToken): void
     {
         $this->serviceToken = $serviceToken;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 }

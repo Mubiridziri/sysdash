@@ -12,6 +12,7 @@ export const MESSAGES_COLUMNS = {
         { id: "type", label: "Тип" },
     ],
     metrics: [
+        { id: "createdAt", label: "Дата" },
         { id: "name", label: "Наименование" },
         { id: "type", label: "Тип" },
         { id: "value", label: "Значение" },

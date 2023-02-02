@@ -5,14 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Table(name: "events")]
+#[ORM\Table(name: "logs")]
 #[ORM\Entity(repositoryClass: 'App\Repository\LogRepository')]
 class Log
 {
-    const ERROR = 'error';
-    const INFO = 'info';
-    const DEBUG = 'debug';
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
