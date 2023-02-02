@@ -33,7 +33,7 @@ class DoctrineFiltrationService
      * @return QueryBuilder
      * @throws \Doctrine\ORM\Mapping\MappingException
      */
-    public function filter($entityName, array $where, QueryBuilder $queryBuilder)
+    public function filter($entityName, array $where, QueryBuilder $queryBuilder): QueryBuilder
     {
         $metadata = $this->em->getClassMetadata($entityName);
 

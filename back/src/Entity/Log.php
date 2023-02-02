@@ -22,12 +22,15 @@ class Log
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Service')]
     private Service $service;
 
+    #[Groups(['View', 'Create'])]
+    private ?string $serviceToken;
+
     #[ORM\Column(type: 'text')]
-    #[Groups(['View'])]
+    #[Groups(['View', 'Create'])]
     private string $message;
 
     #[ORM\Column(type: 'string')]
-    #[Groups(['View'])]
+    #[Groups(['View', 'Create'])]
     private string $type;
 
     #[ORM\Column(type: "datetime", nullable: true)]
@@ -118,5 +121,21 @@ class Log
     public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getServiceToken(): ?string
+    {
+        return $this->serviceToken ?? $this->service->getToken();
+    }
+
+    /**
+     * @param string|null $serviceToken
+     */
+    public function setServiceToken(?string $serviceToken): void
+    {
+        $this->serviceToken = $serviceToken;
     }
 }

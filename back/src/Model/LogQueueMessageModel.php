@@ -15,15 +15,15 @@ class LogQueueMessageModel extends QueueMessageModel
     /**
      * @return mixed
      */
-    public function getMessage()
+    public function getMessage(): string
     {
         return $this->message;
     }
 
     /**
-     * @param mixed $message
+     * @param string $message
      */
-    public function setMessage($message): void
+    public function setMessage(string $message): void
     {
         $this->message = $message;
     }

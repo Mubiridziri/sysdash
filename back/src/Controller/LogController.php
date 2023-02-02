@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Log;
 use App\Entity\Service;
 use App\Service\Doctrine\DoctrineMasterEntityService;
-use App\Service\Doctrine\DoctrinePaginationService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,7 +17,12 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class LogController extends AbstractController
 {
     #[Route("/{serviceId}", methods: ["GET"])]
-    public function list(int $serviceId, ManagerRegistry $managerRegistry, DoctrineMasterEntityService $entityService, Request $request): JsonResponse
+    public function list(
+        int                         $serviceId,
+        ManagerRegistry             $managerRegistry,
+        DoctrineMasterEntityService $entityService,
+        Request                     $request
+    ): JsonResponse
     {
         $doctrineManager = $managerRegistry->getManager();
         $service = $doctrineManager->getRepository(Service::class)->findOneBy([

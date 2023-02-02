@@ -35,7 +35,12 @@ class DoctrineQueryHelper
         $param = uniqid("field");
         if ($strict) {
             $normalizedValue = strtolower($normalizedValue);
-            $queryBuilder->andWhere($expr->like(sprintf('LOWER(%s.%s)', $alias, $field), sprintf(':%s', $param)));
+            $queryBuilder->andWhere(
+                $expr->like(
+                    sprintf('LOWER(%s.%s)', $alias, $field),
+                    sprintf(':%s', $param)
+                )
+            );
         } else {
             $queryBuilder->orWhere($expr->like($field, sprintf(':%s', $param)));
         }

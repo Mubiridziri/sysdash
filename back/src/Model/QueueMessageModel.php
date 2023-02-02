@@ -4,10 +4,7 @@ namespace App\Model;
 
 class QueueMessageModel
 {
-
     private string $serviceToken;
-
-    private string $message;
 
     private string $type;
 

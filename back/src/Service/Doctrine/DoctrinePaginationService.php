@@ -2,7 +2,6 @@
 
 namespace App\Service\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -11,7 +10,7 @@ class DoctrinePaginationService
     const DEFAULT_PAGE = 1;
     const DEFAULT_LIMIT = 10;
 
-    public function getPagination(int $page, int $limit, QueryBuilder $query)
+    public function getPagination(int $page, int $limit, QueryBuilder $query): array
     {
         $paginator = $this->getPaginator($query, $page, $limit);
         return [

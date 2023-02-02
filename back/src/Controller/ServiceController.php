@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Service;
 use App\Service\Doctrine\DoctrineMasterEntityService;
-use App\Service\Doctrine\DoctrinePaginationService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,7 +22,11 @@ class ServiceController extends AbstractController
     }
 
     #[Route("", methods: ["POST"])]
-    public function create(SerializerInterface $serializer, ManagerRegistry $managerRegistry, Request $request): JsonResponse
+    public function create(
+        SerializerInterface $serializer,
+        ManagerRegistry     $managerRegistry,
+        Request             $request
+    ): JsonResponse
     {
         $service = $serializer->deserialize($request->getContent(), Service::class, 'json');
         $em = $managerRegistry->getManager();
@@ -33,7 +36,12 @@ class ServiceController extends AbstractController
     }
 
     #[Route("/{serviceId}", methods: ["PUT"])]
-    public function update(int $serviceId, SerializerInterface $serializer, ManagerRegistry $managerRegistry, Request $request): JsonResponse
+    public function update(
+        int                 $serviceId,
+        SerializerInterface $serializer,
+        ManagerRegistry     $managerRegistry,
+        Request             $request
+    ): JsonResponse
     {
         $em = $managerRegistry->getManager();
         $service = $em->getRepository(Service::class)->findOneBy(['id' => $serviceId]);

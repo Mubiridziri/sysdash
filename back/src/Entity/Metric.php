@@ -18,20 +18,23 @@ class Metric
     #[ORM\ManyToOne(targetEntity: 'App\Entity\Service')]
     private Service $service;
 
+    #[Groups(['View', 'Create'])]
+    private ?string $serviceToken;
+
     #[ORM\Column(type: 'text')]
-    #[Groups(['View'])]
+    #[Groups(['View', 'Create'])]
     private string $name;
 
     #[ORM\Column(type: 'float')]
-    #[Groups(['View'])]
+    #[Groups(['View', 'Create'])]
     private ?float $value;
 
     #[ORM\Column(type: 'string')]
-    #[Groups(['View'])]
+    #[Groups(['View', 'Create'])]
     private string $type;
 
     #[ORM\Column(type: 'json', nullable: true)]
-    #[Groups(['View'])]
+    #[Groups(['View', 'Create'])]
     private ?array $extra;
 
     /**
@@ -128,5 +131,21 @@ class Metric
     public function setValue(?float $value): void
     {
         $this->value = $value;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getServiceToken(): ?string
+    {
+        return $this->serviceToken ?? $this->service->getToken();
+    }
+
+    /**
+     * @param string|null $serviceToken
+     */
+    public function setServiceToken(?string $serviceToken): void
+    {
+        $this->serviceToken = $serviceToken;
     }
 }

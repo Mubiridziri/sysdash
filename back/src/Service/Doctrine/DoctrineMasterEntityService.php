@@ -3,7 +3,6 @@
 namespace App\Service\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 
