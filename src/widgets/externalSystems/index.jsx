@@ -27,13 +27,8 @@ import { loadLogs } from "actions/catalogs/logs";
 import { loadMetrics } from "actions/catalogs/metrics";
 import { openModal } from "actions/modals";
 import { MODAL_STATE } from "components/Modal";
-import WidgetDefaultFormModal from "widgets/catalog/WidgetDefaultFormModal";
-import { loadExternalSystem } from "services/catalogs/externalSystems";
-import { required } from "helpers/formValidators";
-import Button from "components/Button";
-import Icon from "components/Icon";
 import { resetParams } from "actions/requestParams";
-import { MESSAGES_COLUMNS} from "constants/columns";
+import { MESSAGES_COLUMNS } from "constants/columns";
 import GeneralForm from "./GeneralForm";
 
 export const PATH = "/external_systems";
@@ -45,7 +40,7 @@ const EXTERNAL_SYSTEMS_GROUP = [
   { id: "system", label: "Система" },
 ];
 
-const ExternalSystemsWidget = (props) => {
+const ExternalSystemsWidget = ({ isCreate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const externalSystems = useSelector((state) => state.externalSystems);
@@ -57,24 +52,13 @@ const ExternalSystemsWidget = (props) => {
   const [openFilter, setOpenFilter] = React.useState(null);
   const [copiedToken, setCopiedToken] = React.useState(false);
 
+  console.log("isCreate", isCreate);
   useEffect(() => {
     dispatch(loadExternalSystems(INITIAL_VALUES_STATE_PAGE));
   }, [dispatch]);
 
   const onAdd = () => {
-    dispatch(openModal("external-system-modal", MODAL_STATE.OPENED));
-  };
-
-  const onEdit = () => {
-    const currentExternalSystem = externalSystems.entries.find(
-      (item) => item.id === Number(serviceId)
-    );
-    dispatch(
-      openModal("external-system-modal", MODAL_STATE.IS_EDIT, {
-        id: serviceId,
-        initialValues: currentExternalSystem,
-      })
-    );
+    history.push(`${PATH}/create`);
   };
 
   const handleClickItem = (id) => {
@@ -96,36 +80,46 @@ const ExternalSystemsWidget = (props) => {
     setOpenFilter(null);
   };
 
-  const fields = [
-    { id: "title", label: "Наименование", validate: required },
-    { id: "description", label: "Описание", validate: required },
-  ];
-
-  const renderTable = () => {
+  const renderTab = () => {
     switch (value) {
       case "general":
+        const currentExternalSystem = externalSystems.entries.find(
+          (item) => item.id === Number(serviceId)
+        );
         return (
           <GeneralForm
-            fields={fields}
+            id={serviceId}
+            loading={externalSystems.loading}
+            initialValues={currentExternalSystem}
             createAction={createExternalSystem}
             updateAction={updateExternalSystem}
-            loadFetchDataById={loadExternalSystem}
           />
         );
       case "logs":
         return <Logs serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />;
       case "metrics":
-        return <Metrics serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />;
+        return (
+          <Metrics serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />
+        );
       default:
         return null;
     }
   };
 
   const renderContent = () => {
-    if (serviceId) {
-      const currentExternalSystem = externalSystems.entries.find(
-        (item) => item.id === Number(serviceId)
+    if (isCreate) {
+      return (
+        <GeneralForm
+          loading={externalSystems.loading}
+          createAction={createExternalSystem}
+          updateAction={updateExternalSystem}
+        />
       );
+    }
+    if (serviceId) {
+      /*  const currentExternalSystem = externalSystems.entries.find(
+        (item) => item.id === Number(serviceId)
+      ); */
       return (
         <>
           <Box
@@ -167,7 +161,7 @@ const ExternalSystemsWidget = (props) => {
                   theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",
               }}
             >
-              <Button
+              {/* <Button
                 variant="outlined"
                 sx={{ height: 38 }}
                 onClick={() => {
@@ -180,15 +174,7 @@ const ExternalSystemsWidget = (props) => {
                 ) : (
                   "Токен"
                 )}
-              </Button>
-              <IconButton
-                name="edit"
-                title="Редактировать"
-                color="secondary"
-                size="small"
-                onClick={onEdit}
-              />
-
+              </Button> */}
               <Badge
                 badgeContent={Object.keys(filterParams).length}
                 color="secondary"
@@ -221,7 +207,7 @@ const ExternalSystemsWidget = (props) => {
               />
             </Stack>
           </Box>
-          {renderTable()}
+          {renderTab()}
         </>
       );
     }
@@ -264,13 +250,13 @@ const ExternalSystemsWidget = (props) => {
           <Panel>{renderContent()}</Panel>
         </Box>
       </Stack>
-      <WidgetDefaultFormModal
+      {/*       <WidgetDefaultFormModal
         modalName="external-system-modal"
         fields={fields}
         createAction={createExternalSystem}
         updateAction={updateExternalSystem}
         loadFetchDataById={loadExternalSystem}
-      />
+      /> */}
     </>
   );
 };

@@ -92,12 +92,14 @@ const List = ({
           );
         })}
       </MuiList>
-      <Pagination
-        count={Math.ceil(total / 10)}
-        onChange={onChangePagination}
-        color="primary"
-        sx={{ display: "flex", justifyContent: "flex-end", pt: "10px" }}
-      />
+      {total ? (
+        <Pagination
+          count={Math.ceil(total / 10)}
+          onChange={onChangePagination}
+          color="primary"
+          sx={{ display: "flex", justifyContent: "flex-end", pt: "10px" }}
+        />
+      ) : null}
     </>
   );
 };

@@ -9,7 +9,6 @@ import LoadingButton from "components/LoagingButton";
 import Button from "components/Button";
 import StackButton from "components/StackButton";
 import FormHelperText from "components/FormHelperText";
-import { STYLE_CONTENT_FORM } from "constants/styles";
 import LoadingBlock from "components/LoadingBlock";
 import { required } from "helpers/formValidators";
 
@@ -17,41 +16,15 @@ const GeneralForm = ({
   id,
   isView,
   isEdit,
-  loadFetchDataById,
-  initialValuesForm,
-  renderInitialValuesForm,
+  loading,
+  initialValues,
   createAction,
   updateAction,
   onSuccess,
   onEdit,
-  fields,
   readOnly,
 }) => {
   const dispatch = useDispatch();
-
-  const [initialValues, setInitialValues] = React.useState(initialValuesForm);
-  const [loading, setLoading] = React.useState(false);
-
-  React.useEffect(() => {
-    if (id && !initialValuesForm) fetchInitialValues();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const fetchInitialValues = async () => {
-    try {
-      setLoading(true);
-      const response = await loadFetchDataById(id);
-      if (response.error) throw response;
-      if (renderInitialValuesForm) {
-        setInitialValues(renderInitialValuesForm(response));
-      } else {
-        setInitialValues(response);
-      }
-    } catch (e) {
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const onSubmit = (values) => {
     if (isEdit) {
@@ -102,7 +75,7 @@ const GeneralForm = ({
               <Box
                 component="div"
                 sx={{
-                  maxHeight: "calc(100vh - 235px)",
+                  maxHeight: `calc(100vh - ${id ? 234 : 170}px)`,
                   overflow: "auto",
                   padding: "10px",
                 }}
@@ -198,7 +171,7 @@ const GeneralForm = ({
                     >
                       {"Период архивирования (дн)"}
                     </InputLabel>
-                    <Field name="address" validate={required}>
+                    <Field name="archivingPeriod" validate={required}>
                       {({ input, meta }) => (
                         <Input
                           input={input}
@@ -226,7 +199,7 @@ const GeneralForm = ({
                     >
                       Токен
                     </InputLabel>
-                    <Field name="token" validate={required}>
+                    <Field name="token">
                       {({ input, meta }) => (
                         <Input
                           input={input}
@@ -281,7 +254,7 @@ const GeneralForm = ({
 GeneralForm.defaultProps = {
   fields: [],
   onSuccess: () => {},
-  initialValuesForm: {},
+  initialValues: {},
   isView: false,
   isEdit: false,
   readOnly: false,
