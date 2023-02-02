@@ -34,8 +34,16 @@ import Button from "components/Button";
 import Icon from "components/Icon";
 import { resetParams } from "actions/requestParams";
 import { MESSAGES_COLUMNS} from "constants/columns";
+import GeneralForm from "./GeneralForm";
 
 export const PATH = "/external_systems";
+
+const EXTERNAL_SYSTEMS_GROUP = [
+  { id: "general", label: "Общее" },
+  { id: "logs", label: "Логи" },
+  { id: "metrics", label: "Метрики" },
+  { id: "system", label: "Система" },
+];
 
 const ExternalSystemsWidget = (props) => {
   const dispatch = useDispatch();
@@ -45,7 +53,7 @@ const ExternalSystemsWidget = (props) => {
 
   const { serviceId } = useParams();
 
-  const [value, setValue] = React.useState("logs");
+  const [value, setValue] = React.useState("general");
   const [openFilter, setOpenFilter] = React.useState(null);
   const [copiedToken, setCopiedToken] = React.useState(false);
 
@@ -76,7 +84,7 @@ const ExternalSystemsWidget = (props) => {
   const handleChange = (event, newValue) => {
     if (newValue !== null) {
       setValue(newValue);
-      dispatch(resetParams())
+      dispatch(resetParams());
     }
   };
 
@@ -95,6 +103,15 @@ const ExternalSystemsWidget = (props) => {
 
   const renderTable = () => {
     switch (value) {
+      case "general":
+        return (
+          <GeneralForm
+            fields={fields}
+            createAction={createExternalSystem}
+            updateAction={updateExternalSystem}
+            loadFetchDataById={loadExternalSystem}
+          />
+        );
       case "logs":
         return <Logs serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />;
       case "metrics":
@@ -126,14 +143,17 @@ const ExternalSystemsWidget = (props) => {
                 value={value}
                 exclusive
                 onChange={handleChange}
-                aria-label="generalInformation"
+                aria-label="externalSystems"
               >
-                <ToggleButton value="logs" sx={{ width: 150 }}>
-                  Логи
-                </ToggleButton>
-                <ToggleButton value="metrics" sx={{ width: 150 }}>
-                  Метрики
-                </ToggleButton>
+                {EXTERNAL_SYSTEMS_GROUP.map((item) => (
+                  <ToggleButton
+                    key={item.id}
+                    value={item.id}
+                    sx={{ width: 150 }}
+                  >
+                    {item.label}
+                  </ToggleButton>
+                ))}
               </ToggleButtonGroup>
             </Box>
             <Stack
