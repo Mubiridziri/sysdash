@@ -9,6 +9,11 @@ const ExternalSystemsPage = ({ match: { path } }) => {
       <Switch>
         <Route
           exact
+          path={`${path}/create`}
+          render={(props) => <ExternalSystemsWidget isCreate {...props} />}
+        />
+        <Route
+          exact
           path={`${path}/:serviceId`}
           component={ExternalSystemsWidget}
         />

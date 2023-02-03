@@ -14,30 +14,36 @@ import {
   createExternalSystem,
   updateExternalSystem,
 } from "actions/catalogs/externalSystems";
-import Panel from "components/Panel";
-import List from "components/List";
-import { INITIAL_VALUES_STATE_PAGE } from "constants/request";
-import FilterPopover from "components/Filter/FilterPopover";
-import IconButton from "components/IconButton";
-import { LIGHT_THEME } from "constants/themes";
-import Logs from "./Logs";
-import Metrics from "./Metrics";
-import { DARK_MAIN_COLOR } from "themes";
 import { loadLogs } from "actions/catalogs/logs";
 import { loadMetrics } from "actions/catalogs/metrics";
-import { openModal } from "actions/modals";
-import { MODAL_STATE } from "components/Modal";
-import WidgetDefaultFormModal from "widgets/catalog/WidgetDefaultFormModal";
-import { loadExternalSystem } from "services/catalogs/externalSystems";
-import { required } from "helpers/formValidators";
-import Button from "components/Button";
-import Icon from "components/Icon";
 import { resetParams } from "actions/requestParams";
-import { MESSAGES_COLUMNS} from "constants/columns";
+
+import Panel from "components/Panel";
+import List from "components/List";
+import FilterPopover from "components/Filter/FilterPopover";
+import IconButton from "components/IconButton";
+
+import GeneralForm from "./GeneralForm";
+import Logs from "./Logs";
+import Metrics from "./Metrics";
+
+import { DARK_MAIN_COLOR } from "themes";
+import { LIGHT_THEME } from "constants/themes";
+import { MESSAGES_COLUMNS } from "constants/columns";
+import { INITIAL_VALUES_STATE_PAGE } from "constants/request";
 
 export const PATH = "/external_systems";
 
-const ExternalSystemsWidget = (props) => {
+const VISIBLE_FILTER = ["logs", "metrics"];
+
+const EXTERNAL_SYSTEMS_GROUP = [
+  { id: "general", label: "Общее" },
+  { id: "logs", label: "Логи" },
+  { id: "metrics", label: "Метрики" },
+  { id: "system", label: "Система" },
+];
+
+const ExternalSystemsWidget = ({ isCreate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const externalSystems = useSelector((state) => state.externalSystems);
@@ -45,28 +51,15 @@ const ExternalSystemsWidget = (props) => {
 
   const { serviceId } = useParams();
 
-  const [value, setValue] = React.useState("logs");
+  const [value, setValue] = React.useState("general");
   const [openFilter, setOpenFilter] = React.useState(null);
-  const [copiedToken, setCopiedToken] = React.useState(false);
 
   useEffect(() => {
     dispatch(loadExternalSystems(INITIAL_VALUES_STATE_PAGE));
   }, [dispatch]);
 
   const onAdd = () => {
-    dispatch(openModal("external-system-modal", MODAL_STATE.OPENED));
-  };
-
-  const onEdit = () => {
-    const currentExternalSystem = externalSystems.entries.find(
-      (item) => item.id === Number(serviceId)
-    );
-    dispatch(
-      openModal("external-system-modal", MODAL_STATE.IS_EDIT, {
-        id: serviceId,
-        initialValues: currentExternalSystem,
-      })
-    );
+    history.push(`${PATH}/create`);
   };
 
   const handleClickItem = (id) => {
@@ -76,8 +69,12 @@ const ExternalSystemsWidget = (props) => {
   const handleChange = (event, newValue) => {
     if (newValue !== null) {
       setValue(newValue);
-      dispatch(resetParams())
+      dispatch(resetParams());
     }
+  };
+
+  const handleChangePagination = () => {
+    history.push(PATH);
   };
 
   const onOpenFilter = (event) => {
@@ -88,27 +85,48 @@ const ExternalSystemsWidget = (props) => {
     setOpenFilter(null);
   };
 
-  const fields = [
-    { id: "title", label: "Наименование", validate: required },
-    { id: "description", label: "Описание", validate: required },
-  ];
-
-  const renderTable = () => {
+  const renderTab = () => {
     switch (value) {
+      case "general":
+        const currentExternalSystem = externalSystems.entries.find(
+          (item) => item.id === Number(serviceId)
+        );
+        return (
+          <GeneralForm
+            id={serviceId}
+            loading={externalSystems.loading}
+            initialValues={currentExternalSystem}
+            createAction={createExternalSystem}
+            updateAction={updateExternalSystem}
+            path={PATH}
+            isEdit
+          />
+        );
       case "logs":
         return <Logs serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />;
       case "metrics":
-        return <Metrics serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />;
+        return (
+          <Metrics serviceId={serviceId} columns={MESSAGES_COLUMNS[value]} />
+        );
+      case "system":
+        return "В разработке";
       default:
         return null;
     }
   };
 
   const renderContent = () => {
-    if (serviceId) {
-      const currentExternalSystem = externalSystems.entries.find(
-        (item) => item.id === Number(serviceId)
+    if (isCreate) {
+      return (
+        <GeneralForm
+          loading={externalSystems.loading}
+          createAction={createExternalSystem}
+          updateAction={updateExternalSystem}
+          path={PATH}
+        />
       );
+    }
+    if (serviceId) {
       return (
         <>
           <Box
@@ -117,7 +135,7 @@ const ExternalSystemsWidget = (props) => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              mb: 1,
+              mb: 2,
             }}
           >
             <Box component="div" sx={{ display: "flex", alignItems: "center" }}>
@@ -126,82 +144,64 @@ const ExternalSystemsWidget = (props) => {
                 value={value}
                 exclusive
                 onChange={handleChange}
-                aria-label="generalInformation"
+                aria-label="externalSystems"
               >
-                <ToggleButton value="logs" sx={{ width: 150 }}>
-                  Логи
-                </ToggleButton>
-                <ToggleButton value="metrics" sx={{ width: 150 }}>
-                  Метрики
-                </ToggleButton>
+                {EXTERNAL_SYSTEMS_GROUP.map((item) => (
+                  <ToggleButton
+                    key={item.id}
+                    value={item.id}
+                    sx={{ width: 150 }}
+                  >
+                    {item.label}
+                  </ToggleButton>
+                ))}
               </ToggleButtonGroup>
             </Box>
-            <Stack
-              direction="row"
-              alignItems="center"
-              sx={{
-                height: "54px",
-                padding: "6px",
-                borderRadius: "7px",
-                bgcolor: (theme) =>
-                  theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",
-              }}
-            >
-              <Button
-                variant="outlined"
-                sx={{ height: 38 }}
-                onClick={() => {
-                  navigator.clipboard.writeText(currentExternalSystem.token);
-                  setCopiedToken(true);
-                }}
-              >
-                {copiedToken ? (
-                  <Icon name="success" color="success" />
-                ) : (
-                  "Токен"
-                )}
-              </Button>
-              <IconButton
-                name="edit"
-                title="Редактировать"
-                color="secondary"
-                size="small"
-                onClick={onEdit}
-              />
-
-              <Badge
-                badgeContent={Object.keys(filterParams).length}
-                color="secondary"
+            {VISIBLE_FILTER.includes(value) ? (
+              <Stack
+                direction="row"
+                alignItems="center"
                 sx={{
-                  "& .MuiBadge-badge": {
-                    right: 10,
-                    top: 8,
-                  },
+                  height: "38px",
+                  borderRadius: "7px",
+                  bgcolor: (theme) =>
+                    theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",
                 }}
               >
-                <IconButton
-                  name="filter"
-                  title="Фильтрация"
-                  size="small"
+                <Badge
+                  badgeContent={Object.keys(filterParams).length}
+                  color="secondary"
                   sx={{
-                    color: (theme) =>
-                      Object.keys(filterParams).length
-                        ? DARK_MAIN_COLOR
-                        : theme.palette.secondary.main,
+                    "& .MuiBadge-badge": {
+                      right: 10,
+                      top: 8,
+                    },
                   }}
-                  onClick={onOpenFilter}
+                >
+                  <IconButton
+                    name="filter"
+                    title="Фильтрация"
+                    size="small"
+                    sx={{
+                      color: (theme) =>
+                        Object.keys(filterParams).length
+                          ? DARK_MAIN_COLOR
+                          : theme.palette.secondary.main,
+                    }}
+                    onClick={onOpenFilter}
+                  />
+                </Badge>
+                <FilterPopover
+                  open={openFilter}
+                  onClose={onCloseFilter}
+                  fields={MESSAGES_COLUMNS[value]}
+                  loadData={value === "logs" ? loadLogs : loadMetrics}
+                  loadId={serviceId}
                 />
-              </Badge>
-              <FilterPopover
-                open={openFilter}
-                onClose={onCloseFilter}
-                fields={MESSAGES_COLUMNS[value]}
-                loadData={value === "logs" ? loadLogs : loadMetrics}
-                loadId={serviceId}
-              />
-            </Stack>
+              </Stack>
+            ) : null}
           </Box>
-          {renderTable()}
+          {renderTab()}
         </>
       );
     }
@@ -230,6 +230,7 @@ const ExternalSystemsWidget = (props) => {
               subheader="Внешние системы"
               activeItem={serviceId}
               onAdd={onAdd}
+              handleChangePagination={handleChangePagination}
             />
           </Panel>
         </Box>
@@ -244,13 +245,6 @@ const ExternalSystemsWidget = (props) => {
           <Panel>{renderContent()}</Panel>
         </Box>
       </Stack>
-      <WidgetDefaultFormModal
-        modalName="external-system-modal"
-        fields={fields}
-        createAction={createExternalSystem}
-        updateAction={updateExternalSystem}
-        loadFetchDataById={loadExternalSystem}
-      />
     </>
   );
 };

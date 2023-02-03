@@ -3,11 +3,11 @@ import { Tooltip, IconButton as MuiIconButton } from "@mui/material";
 
 import Icon from "components/Icon";
 
-const IconButton = ({ name, title, ...props }) => {
+const IconButton = ({ name, title, sxIcon, ...props }) => {
   return (
     <Tooltip title={title}>
       <MuiIconButton {...props}>
-        <Icon name={name} />
+        <Icon name={name} sx={sxIcon} />
       </MuiIconButton>
     </Tooltip>
   );
