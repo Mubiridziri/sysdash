@@ -19,14 +19,16 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Toolbar from "@mui/material/Toolbar";
 
-import { setPagination, setSort } from "actions/requestParams";
-import { setCheckedCheckboxes } from "actions/checkboxes";
+import {
+  setPaginationParams,
+  setSortParams,
+} from "store/table/requestParamsTable.slice";
+import { setCheckedCheckboxes } from "store/table/checkboxesTable.slice";
 
 import Menu from "components/Menu";
 import CircularLoading from "components/CircularLoading";
 import { RadioButton } from "components/Radio";
 
-import { getFilterParams } from "helpers/requestParams";
 import { getHighlightedText } from "helpers/highlightedText";
 import { getAllCheckboxes } from "helpers/table";
 import { LIGHT_THEME } from "constants/themes";
@@ -62,20 +64,16 @@ const ServerSideTable = ({
   total,
   columns,
   data,
-  loadData,
   loadId,
   onView,
   onEdit,
   onDelete,
   loading,
   readOnly,
-  fieldName,
-  entryValue,
   withActions,
   withToolbar,
   withCheckboxes,
   withRadioButtons,
-  isGroup,
   extraActions,
   activeRadioButton,
   onRadioButtonClick,
@@ -84,90 +82,24 @@ const ServerSideTable = ({
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const requestParams = useSelector((state) => state.requestParams);
+  const {
+    paginationParams,
+    sortParams = {},
+    searchParams = {},
+  } = useSelector((state) => state.requestParamsTable);
   const checkedEntries = useSelector(
-    (state) => state.checkedCheckboxes.entries
+    (state) => state.checkboxesTable.entries
   );
 
-  const { paginationParams, filterParams, sortParams, searchParams } =
-    requestParams;
-
   const handleChangePage = (event, newPage) => {
-    const pagination = { ...paginationParams, page: newPage + 1 };
-    if (isGroup) {
-      dispatch(
-        loadData({
-          url,
-          fieldName,
-          value: entryValue,
-          ...pagination,
-          ...sortParams,
-        })
-      );
-    } else {
-      const filter = getFilterParams(filterParams);
-      if (loadId) {
-        dispatch(
-          loadData(loadId, {
-            ...pagination,
-            ...sortParams,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      } else {
-        dispatch(
-          loadData({
-            ...pagination,
-            ...sortParams,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      }
-    }
-
-    dispatch(setPagination({ ...paginationParams, page: newPage + 1 }));
+    dispatch(setPaginationParams({ ...paginationParams, page: newPage + 1 }));
   };
 
   const handleChangeRowsPerPage = (event) => {
     const newRowsPerPage = +event.target.value;
     const initialPage = 1;
-    const pagination = {
-      ...paginationParams,
-      page: initialPage,
-      limit: newRowsPerPage,
-    };
-    if (isGroup) {
-      dispatch(
-        loadData({
-          url,
-          fieldName,
-          value: entryValue,
-          ...pagination,
-          ...sortParams,
-        })
-      );
-    } else {
-      const filter = getFilterParams(filterParams);
 
-      if (loadId) {
-        dispatch(
-          loadData(loadId, {
-            ...pagination,
-            ...sortParams,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      } else {
-        dispatch(
-          loadData({ ...pagination, ...sortParams, ...searchParams, ...filter })
-        );
-      }
-    }
-
-    dispatch(setPagination({ page: initialPage, limit: newRowsPerPage }));
+    dispatch(setPaginationParams({ page: initialPage, limit: newRowsPerPage }));
     dispatch(
       setCheckedCheckboxes({
         [initialPage]: checkedEntries[initialPage],
@@ -178,43 +110,8 @@ const ServerSideTable = ({
   const handleClickSort = (event, property) => {
     const isAsc = sortParams.column === property && sortParams.sort === "asc";
     const newOrder = isAsc ? "desc" : "asc";
-    if (isGroup) {
-      dispatch(
-        loadData({
-          url,
-          fieldName,
-          value: entryValue,
-          ...paginationParams,
-          column: property,
-          sort: newOrder,
-          ...searchParams,
-        })
-      );
-    } else {
-      const filter = getFilterParams(filterParams);
-      if (loadId) {
-        dispatch(
-          loadData(loadId, {
-            ...paginationParams,
-            column: property,
-            sort: newOrder,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      } else {
-        dispatch(
-          loadData({
-            ...paginationParams,
-            column: property,
-            sort: newOrder,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      }
-    }
-    dispatch(setSort({ column: property, sort: newOrder }));
+
+    dispatch(setSortParams({ column: property, sort: newOrder }));
   };
 
   const handleChangeAllChecked = (event, checked) => {

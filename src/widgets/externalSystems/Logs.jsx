@@ -1,27 +1,23 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import ServerSideTable from "components/Table/ServerSideTable";
-import { INITIAL_VALUES_STATE_PAGE } from "constants/request";
-import { loadLogs } from "actions/catalogs/logs";
+import { useGetLogsQuery } from "store/externalSystems/logs.api";
 
 const Logs = ({ serviceId, columns }) => {
-  const dispatch = useDispatch();
+  const requestParamsTable = useSelector((state) => state.requestParamsTable);
 
-  const logs = useSelector((state) => state.logs);
-
-  React.useEffect(() => {
-    dispatch(loadLogs(serviceId, INITIAL_VALUES_STATE_PAGE));
-  }, [dispatch, serviceId]);
+  const { data = {}, isFetching } = useGetLogsQuery({
+    serviceId,
+    params: requestParamsTable,
+  });
 
   return (
     <ServerSideTable
-      total={logs.total}
+      total={data?.total}
       columns={columns}
-      data={logs.entries}
-      loadData={loadLogs}
-      loadId={serviceId}
-      loading={logs.loading}
+      data={data?.entries}
+      loading={isFetching}
       withActions={false}
       readOnly
     />

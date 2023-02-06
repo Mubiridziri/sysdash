@@ -6,6 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 
 import CircularLoading from "components/CircularLoading";
 import IconButton from "components/IconButton";
+import { setPaginationParams } from "store/list/requestParamsList.slice";
 
 const List = ({
   total,
@@ -16,6 +17,7 @@ const List = ({
   activeItem,
   subheader,
   onAdd,
+  disabledAddButton,
   handleChangePagination,
 }) => {
   const dispatch = useDispatch();
@@ -29,7 +31,7 @@ const List = ({
   const onChangePagination = (event, page) => {
     handleChangePagination();
     setSelected(null);
-    dispatch(loadData({ page, limit: 10 }));
+    dispatch(setPaginationParams({ page, limit: 25 }));
   };
 
   const renderSubHeader = () => {
@@ -45,13 +47,16 @@ const List = ({
         <Box component="div" sx={{ fontWeight: 700 }}>
           {subheader}
         </Box>
-        <IconButton
-          name="add"
-          title="Создать"
-          color="secondary"
-          size="small"
-          onClick={onAdd}
-        />
+        {onAdd ? (
+          <IconButton
+            name="add"
+            title="Создать"
+            color="secondary"
+            size="small"
+            onClick={onAdd}
+            disabled={disabledAddButton}
+          />
+        ) : null}
       </Box>
     );
   };
@@ -95,7 +100,7 @@ const List = ({
       </MuiList>
       {total ? (
         <Pagination
-          count={Math.ceil(total / 10)}
+          count={Math.ceil(total / 25)}
           onChange={onChangePagination}
           color="primary"
           sx={{ display: "flex", justifyContent: "flex-end", pt: "10px" }}

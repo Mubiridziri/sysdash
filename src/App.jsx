@@ -9,7 +9,8 @@ import {
 
 import { Box, Toolbar } from "@mui/material";
 
-import ExternalSystemsPage from "pages/catalogs/ExternalSystemsPage";
+import ExternalSystemsPage from "pages/ExternalSystemsPage";
+import ClassifiersPage from "./pages/ClassifiersPage";
 
 import Header from "components/Header";
 
@@ -18,6 +19,7 @@ import { LIGHT_THEME } from "constants/themes";
 
 const routeComponents = {
   external_systems: ExternalSystemsPage,
+  classifiers: ClassifiersPage,
 };
 
 const App = () => {

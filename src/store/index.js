@@ -1,15 +1,36 @@
-import { createStore, applyMiddleware, compose } from "redux";
-import createSagaMiddleware from "redux-saga";
+import { configureStore } from "@reduxjs/toolkit";
 
-import reducers from "../reducers";
-import rootSaga from "../sagas";
+// slice
+import modalReducer from "./modal/modal.slice";
+import requestParamsTableReducer from "./table/requestParamsTable.slice";
+import requestParamsListReducer from "./list/requestParamsList.slice";
+import checkboxesTableReducer from "./table/checkboxesTable.slice";
 
-const sagaMiddleware = createSagaMiddleware();
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// api
+import { externalSystemsApi } from "./externalSystems/externalSystems.api";
+import { logsApi } from "./externalSystems/logs.api";
+import { metricsApi } from "./externalSystems/metrics.api";
+import { classifiersApi } from "./classifiers/classifiers.api";
+import { classifierDataApi } from "./classifiers/classifierData.api";
 
-export default createStore(
-  reducers,
-  composeEnhancers(applyMiddleware(sagaMiddleware))
-);
-
-sagaMiddleware.run(rootSaga);
+export const store = configureStore({
+  reducer: {
+    modal: modalReducer,
+    requestParamsTable: requestParamsTableReducer,
+    requestParamsList: requestParamsListReducer,
+    checkboxesTable: checkboxesTableReducer,
+    [externalSystemsApi.reducerPath]: externalSystemsApi.reducer,
+    [logsApi.reducerPath]: logsApi.reducer,
+    [metricsApi.reducerPath]: metricsApi.reducer,
+    [classifiersApi.reducerPath]: classifiersApi.reducer,
+    [classifierDataApi.reducerPath]: classifierDataApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(
+      externalSystemsApi.middleware,
+      logsApi.middleware,
+      metricsApi.middleware,
+      classifiersApi.middleware,
+      classifierDataApi.middleware
+    ),
+});

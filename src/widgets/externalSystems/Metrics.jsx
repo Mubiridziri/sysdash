@@ -1,27 +1,23 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import ServerSideTable from "components/Table/ServerSideTable";
-import { INITIAL_VALUES_STATE_PAGE } from "constants/request";
-import { loadMetrics } from "actions/catalogs/metrics";
+import { useGetMetricsQuery } from "store/externalSystems/metrics.api";
 
 const Metrics = ({ serviceId, columns }) => {
-  const dispatch = useDispatch();
+  const requestParamsTable = useSelector((state) => state.requestParamsTable);
 
-  const metrics = useSelector((state) => state.metrics);
-
-  React.useEffect(() => {
-    dispatch(loadMetrics(serviceId, INITIAL_VALUES_STATE_PAGE));
-  }, [dispatch, serviceId]);
+  const { data = {}, isFetching } = useGetMetricsQuery({
+    serviceId,
+    params: requestParamsTable,
+  });
 
   return (
     <ServerSideTable
-      total={metrics.total}
+      total={data?.total}
       columns={columns}
-      data={metrics.entries}
-      loadData={loadMetrics}
-      loadId={serviceId}
-      loading={metrics.loading}
+      data={data?.entries}
+      loading={isFetching}
       withActions={false}
       readOnly
     />

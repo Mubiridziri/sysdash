@@ -2,8 +2,7 @@ import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Modal as MuiModal, IconButton } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-
-import { closeModal } from "actions/modals";
+import { closeModal } from "store/modal/modal.slice";
 
 export const MODAL_STATE = {
   IS_VIEW: "isView",
@@ -26,11 +25,11 @@ const style = {
 
 const Modal = ({ modalName, title, children, onClose = () => {} }) => {
   const dispatch = useDispatch();
-  const open = useSelector((state) => state.modals[modalName]);
+  const open = useSelector((state) => state.modal[modalName]);
 
   const handleClose = useCallback(() => {
     onClose();
-    return dispatch(closeModal(modalName));
+    return dispatch(closeModal({ modalName }));
   }, [dispatch, modalName, onClose]);
 
   return (

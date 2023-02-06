@@ -3,75 +3,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { Popover, Box, Typography } from "@mui/material";
 
-import { setFilter } from "actions/requestParams";
-
 import Icon from "components/Icon";
 import Button from "components/Button";
 import LoadingButton from "components/LoagingButton";
 import Input from "components/FormFields/Input";
 import AsyncSelect from "components/FormFields/AsyncSelect";
 import Select from "components/FormFields/Select";
-import { getFilterParams } from "helpers/requestParams";
 import { DATE_RANGE } from "constants/filter";
 import { parseNumber } from "helpers/parse";
 import DatepickerReactFinalForm from "components/FormFields/Datepicker/DatepickerReactFinalForm";
 import { isValidDate } from "helpers/formValidators";
+import { setFilterParams } from "store/table/requestParamsTable.slice";
 
 const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
   const dispatch = useDispatch();
-  const requestParams = useSelector((state) => state.requestParams);
-
-  const { paginationParams, sortParams, filterParams, searchParams } =
-    requestParams;
+  const filterParams = useSelector(
+    (state) => state.requestParamsTable.filterParams
+  );
 
   const id = Boolean(open) ? "simple-popover" : undefined;
 
   const onSubmit = (values) => {
-    const params = getFilterParams(values);
-    if (loadId) {
-      dispatch(
-        loadData(loadId, {
-          ...paginationParams,
-          ...sortParams,
-          ...searchParams,
-          ...params,
-        })
-      );
-    } else {
-      dispatch(
-        loadData({
-          ...paginationParams,
-          ...sortParams,
-          ...searchParams,
-          ...params,
-        })
-      );
-    }
-
-    dispatch(setFilter(values));
+    dispatch(setFilterParams(values));
   };
 
   const onReset = (form) => {
     form.reset();
     if (Object.keys(filterParams).length) {
-      dispatch(setFilter({}));
-      if (loadId) {
-        dispatch(
-          loadData(loadId, {
-            ...paginationParams,
-            ...sortParams,
-            ...searchParams,
-          })
-        );
-      } else {
-        dispatch(
-          loadData({
-            ...paginationParams,
-            ...sortParams,
-            ...searchParams,
-          })
-        );
-      }
+      dispatch(setFilterParams({}));
     }
   };
 
