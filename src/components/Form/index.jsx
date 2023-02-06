@@ -161,40 +161,29 @@ const DefaultForm = ({
                 }
               })}
             </Box>
-            {!readOnly ? (
+            {!isView ? (
               <StackButton>
-                {isView ? (
-                  <Button
+                <>
+                  <LoadingButton
+                    disabled={pristine || !validSaveBtn || isView}
+                    loading={submitting}
                     variant="contained"
+                    type="submit"
                     color="primary"
                     size="small"
-                    onClick={checkEditClick}
                   >
-                    Редактировать
+                    Применить
+                  </LoadingButton>
+                  <Button
+                    disabled={isView || pristine || submitting}
+                    variant="outlined"
+                    size="small"
+                    onClick={form.reset}
+                    color="inherit"
+                  >
+                    Сброс
                   </Button>
-                ) : (
-                  <>
-                    <LoadingButton
-                      disabled={pristine || !validSaveBtn || isView}
-                      loading={submitting}
-                      variant="contained"
-                      type="submit"
-                      color="primary"
-                      size="small"
-                    >
-                      Применить
-                    </LoadingButton>
-                    <Button
-                      disabled={isView || pristine || submitting}
-                      variant="outlined"
-                      size="small"
-                      onClick={form.reset}
-                      color="inherit"
-                    >
-                      Сброс
-                    </Button>
-                  </>
-                )}
+                </>
               </StackButton>
             ) : null}
             {submitError && !dirtySinceLastSubmit && (

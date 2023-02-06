@@ -6,9 +6,11 @@ import Icon from "components/Icon";
 const IconButton = ({ name, title, sxIcon, ...props }) => {
   return (
     <Tooltip title={title}>
-      <MuiIconButton {...props}>
-        <Icon name={name} sx={sxIcon} />
-      </MuiIconButton>
+      <span>
+        <MuiIconButton {...props}>
+          <Icon name={name} sx={sxIcon} />
+        </MuiIconButton>
+      </span>
     </Tooltip>
   );
 };

@@ -29,6 +29,7 @@ import IconButton from "components/IconButton";
 import { MODAL_STATE } from "components/Modal";
 import { openModal } from "store/modal/modal.slice";
 import FormModal from "components/FormModal";
+import withAlert from "components/HOC/withAlert";
 
 export const PATH = "/classifiers";
 
@@ -39,7 +40,7 @@ const CLASSIFIERS_GROUP = [
   { id: "data", label: "Данные" },
 ];
 
-const ClassifiersWidget = ({ isCreate }) => {
+const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -101,6 +102,7 @@ const ClassifiersWidget = ({ isCreate }) => {
             id={classifierId}
             initialValues={currentClassifier}
             path={PATH}
+            onOpenAlert={onOpenAlert}
             isEdit
           />
         );
@@ -116,7 +118,7 @@ const ClassifiersWidget = ({ isCreate }) => {
 
   const renderContent = () => {
     if (isCreate) {
-      return <GeneralForm path={PATH} />;
+      return <GeneralForm path={PATH} onOpenAlert={onOpenAlert} />;
     }
     if (classifierId) {
       return (
@@ -203,6 +205,7 @@ const ClassifiersWidget = ({ isCreate }) => {
               subheader="Классификаторы"
               activeItem={classifierId}
               onAdd={onAdd}
+              disabledAddButton={Boolean(isCreate)}
               handleChangePagination={handleChangePagination}
             />
           </Panel>
@@ -230,4 +233,4 @@ const ClassifiersWidget = ({ isCreate }) => {
   );
 };
 
-export default ClassifiersWidget;
+export default withAlert(ClassifiersWidget);

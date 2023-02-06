@@ -16,6 +16,7 @@ const List = ({
   activeItem,
   subheader,
   onAdd,
+  disabledAddButton,
   handleChangePagination,
 }) => {
   const dispatch = useDispatch();
@@ -51,6 +52,7 @@ const List = ({
           color="secondary"
           size="small"
           onClick={onAdd}
+          disabled={disabledAddButton}
         />
       </Box>
     );

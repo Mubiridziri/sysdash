@@ -2,14 +2,16 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { openModal } from "store/modal/modal.slice";
-import { useGetClassifierDataQuery } from "store/classifiers/classifierData.api";
+import {
+  useGetClassifierDataQuery,
+  useDeleteClassifierDataMutation,
+} from "store/classifiers/classifierData.api";
 
 import ServerSideTable from "components/Table/ServerSideTable";
 import { MODAL_STATE } from "components/Modal";
-import FormModal from "components/FormModal";
-import { CLASSIFIER_DATA_COLUMNS } from "constants/columns";
+import withDeleteDialog from "components/HOC/withDeleteDialog";
 
-const Data = ({ classifierId, columns }) => {
+const Data = ({ classifierId, columns, onOpenDeleteDialog }) => {
   const dispatch = useDispatch();
   const requestParamsTable = useSelector((state) => state.requestParamsTable);
 
@@ -18,29 +20,29 @@ const Data = ({ classifierId, columns }) => {
     params: requestParamsTable,
   });
 
+  const [deleteClassifierData] = useDeleteClassifierDataMutation();
+
   const onView = (id) => {
-    dispatch(
-      openModal({
-        modalName: "classifier-data",
-        modalState: MODAL_STATE.IS_VIEW,
-        data: id,
-      })
-    );
+    openModalClassifierData(id, MODAL_STATE.IS_VIEW);
   };
   const onEdit = (id) => {
-    console.log('id', id)
+    openModalClassifierData(id, MODAL_STATE.IS_EDIT);
+  };
+
+  const openModalClassifierData = (id, modalState) => {
     const initialValues = data.entries.find((item) => item.id === id);
     dispatch(
       openModal({
         modalName: "classifier-data",
-        modalState: MODAL_STATE.IS_EDIT,
+        modalState,
         data: { id, initialValues },
       })
     );
   };
-  /* const onDeleteClassifierData = (id) => {
-    dispatch(deleteAction(id));
-  }; */
+
+  const onDelete = (id) => {
+    onOpenDeleteDialog(() => dispatch(deleteClassifierData(id)));
+  };
 
   return (
     <>
@@ -51,9 +53,10 @@ const Data = ({ classifierId, columns }) => {
         loading={isLoading}
         onView={onView}
         onEdit={onEdit}
+        onDelete={onDelete}
       />
     </>
   );
 };
 
-export default Data;
+export default withDeleteDialog(Data);

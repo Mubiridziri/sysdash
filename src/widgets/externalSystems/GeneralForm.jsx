@@ -14,7 +14,6 @@ import Button from "components/Button";
 import StackButton from "components/StackButton";
 import FormHelperText from "components/FormHelperText";
 import LoadingBlock from "components/LoadingBlock";
-import withAlert from "components/HOC/withAlert";
 import InputLabel from "components/InputLabel";
 import InputLabelWithHelp from "components/InputLabelWithHelp";
 import Icon from "components/Icon";
@@ -35,7 +34,7 @@ import {
 const GeneralForm = ({ id, isEdit, initialValues, onOpenAlert, path }) => {
   const history = useHistory();
 
-  const [createExternalSystem, { data = {}, isLoading: isLoadingCreate }] =
+  const [createExternalSystem, { isLoading: isLoadingCreate }] =
     useCreateExternalSystemMutation();
   const [updateExternalSystem, { isLoading: isLoadingUpdate }] =
     useUpdateExternalSystemMutation();
@@ -51,9 +50,9 @@ const GeneralForm = ({ id, isEdit, initialValues, onOpenAlert, path }) => {
     } else {
       await createExternalSystem(values)
         .unwrap()
-        .then(() => {
-          onOpenAlert("success", SUCCESS_SAVE_MESSAGE);
+        .then((data) => {
           history.push(`${path}/${data.id}/general`);
+          onOpenAlert("success", SUCCESS_SAVE_MESSAGE);
         })
         .catch(() => {});
     }
@@ -214,4 +213,4 @@ GeneralForm.defaultProps = {
   isEdit: false,
 };
 
-export default withAlert(GeneralForm);
+export default GeneralForm;

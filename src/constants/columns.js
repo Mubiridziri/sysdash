@@ -1,3 +1,5 @@
+import { required } from "helpers/formValidators";
+
 export const EXTERNAL_SYSTEMS_COLUMNS = [
   { id: "title", label: "Наименование" },
   { id: "description", label: "Описание" },
@@ -25,6 +27,6 @@ export const MESSAGES_COLUMNS = {
 };
 
 export const CLASSIFIER_DATA_COLUMNS = [
-  { id: "code", label: "Код" },
-  { id: "value", label: "Значение" },
+  { id: "code", label: "Код", validate: required },
+  { id: "value", label: "Значение", validate: required },
 ];

@@ -17,6 +17,7 @@ import { MESSAGES_COLUMNS } from "constants/columns";
 import { useGetExternalSystemsQuery } from "store/externalSystems/externalSystems.api";
 import { resetParams } from "store/requestParamsTable/requestParamsTable.slice";
 import Filter from "components/Filter";
+import withAlert from "components/HOC/withAlert";
 
 export const PATH = "/external_systems";
 
@@ -29,7 +30,7 @@ const EXTERNAL_SYSTEMS_GROUP = [
   { id: "system", label: "Система" },
 ];
 
-const ExternalSystemsWidget = ({ isCreate }) => {
+const ExternalSystemsWidget = ({ isCreate, onOpenAlert }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -72,6 +73,7 @@ const ExternalSystemsWidget = ({ isCreate }) => {
             id={serviceId}
             initialValues={currentExternalSystem}
             path={PATH}
+            onOpenAlert={onOpenAlert}
             isEdit
           />
         );
@@ -92,7 +94,7 @@ const ExternalSystemsWidget = ({ isCreate }) => {
 
   const renderContent = () => {
     if (isCreate) {
-      return <GeneralForm path={PATH} />;
+      return <GeneralForm path={PATH} onOpenAlert={onOpenAlert} />;
     }
     if (serviceId) {
       return (
@@ -173,6 +175,7 @@ const ExternalSystemsWidget = ({ isCreate }) => {
               subheader="Внешние системы"
               activeItem={serviceId}
               onAdd={onAdd}
+              disabledAddButton={Boolean(isCreate)}
               handleChangePagination={handleChangePagination}
             />
           </Panel>
@@ -192,4 +195,4 @@ const ExternalSystemsWidget = ({ isCreate }) => {
   );
 };
 
-export default ExternalSystemsWidget;
+export default withAlert(ExternalSystemsWidget);

@@ -18,7 +18,7 @@ const FormModal = ({ modalName, ...props }) => {
     (state) => state.modal[modalName] === MODAL_STATE.IS_EDIT
   );
   const data = useSelector((state) => state.modal.data);
-  console.log('data', data)
+  console.log("data", data);
 
   const handleClose = useCallback(
     () => dispatch(closeModal({ modalName })),
@@ -30,6 +30,8 @@ const FormModal = ({ modalName, ...props }) => {
       <Form
         id={data?.id}
         initialValues={data?.initialValues}
+        isView={isView}
+        isEdit={isEdit}
         onSuccess={handleClose}
         {...props}
       />

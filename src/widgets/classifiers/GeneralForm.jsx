@@ -26,7 +26,7 @@ import { required } from "helpers/formValidators";
 const GeneralForm = ({ id, isEdit, initialValues, onOpenAlert, path }) => {
   const history = useHistory();
 
-  const [createClassifier, { data = {}, isLoading: isLoadingCreate }] =
+  const [createClassifier, { isLoading: isLoadingCreate }] =
     useCreateClassifierMutation();
   const [updateClassifier, { isLoading: isLoadingUpdate }] =
     useUpdateClassifierMutation();
@@ -42,7 +42,7 @@ const GeneralForm = ({ id, isEdit, initialValues, onOpenAlert, path }) => {
     } else {
       await createClassifier(values)
         .unwrap()
-        .then(() => {
+        .then((data) => {
           onOpenAlert("success", SUCCESS_SAVE_MESSAGE);
           history.push(`${path}/${data.id}/general`);
         })
@@ -120,4 +120,4 @@ GeneralForm.defaultProps = {
   isEdit: false,
 };
 
-export default withAlert(GeneralForm);
+export default GeneralForm;
