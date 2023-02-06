@@ -1,45 +1,57 @@
 import React from "react";
 import { NavLink, useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import {
+  Badge,
+  Box,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
+} from "@mui/material";
 
-import { loadExternalSystems } from "actions/catalogs/externalSystems";
+import { resetParams } from "store/requestParamsTable/requestParamsTable.slice";
+import { useGetClassifiersQuery } from "store/classifiers/classifiers.api";
+import {
+  useCreateClassifierDataMutation,
+  useUpdateClassifierDataMutation,
+} from "store/classifiers/classifierData.api";
 
 import Panel from "components/Panel";
 import List from "components/List";
-
-import GeneralForm from "./GeneralForm";
-import Logs from "./Logs";
-import Metrics from "./Metrics";
+import FilterPopover from "components/Filter/FilterPopover";
 
 import { LIGHT_THEME } from "constants/themes";
-import { MESSAGES_COLUMNS } from "constants/columns";
-import { useGetExternalSystemsQuery } from "store/externalSystems/externalSystems.api";
-import { resetParams } from "store/requestParamsTable/requestParamsTable.slice";
+import { CLASSIFIER_DATA_COLUMNS, MESSAGES_COLUMNS } from "constants/columns";
 import Filter from "components/Filter";
+import GeneralForm from "./GeneralForm";
+import Data from "./Data";
+import IconButton from "components/IconButton";
+import { MODAL_STATE } from "components/Modal";
+import { openModal } from "store/modal/modal.slice";
+import FormModal from "components/FormModal";
 
-export const PATH = "/external_systems";
+export const PATH = "/classifiers";
 
-const VISIBLE_FILTER = ["logs", "metrics"];
+const VISIBLE_FILTER = ["data"];
 
-const EXTERNAL_SYSTEMS_GROUP = [
+const CLASSIFIERS_GROUP = [
   { id: "general", label: "Общее" },
-  { id: "logs", label: "Логи" },
-  { id: "metrics", label: "Метрики" },
-  { id: "system", label: "Система" },
+  { id: "data", label: "Данные" },
 ];
 
-const ExternalSystemsWidget = ({ isCreate }) => {
+const ClassifiersWidget = ({ isCreate }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { data = {}, isFetching } = useGetExternalSystemsQuery();
+  const { classifierId, tabKey } = useParams();
 
   const filterParams = useSelector(
     (state) => state.requestParamsTable.filterParams
   );
 
-  const { serviceId, tabKey } = useParams();
+  const { data = {}, isLoading } = useGetClassifiersQuery();
+  const [createClassifierData] = useCreateClassifierDataMutation();
+  const [updateClassifierData] = useUpdateClassifierDataMutation();
 
   React.useEffect(() => {
     dispatch(resetParams());
@@ -48,6 +60,16 @@ const ExternalSystemsWidget = ({ isCreate }) => {
   const onAdd = () => {
     history.push(`${PATH}/create`);
   };
+
+  const onAddClassifierData = () => {
+    dispatch(
+      openModal({
+        modalName: "classifier-data",
+        modalState: MODAL_STATE.OPENED,
+      })
+    );
+  };
+
   console.log("tabKey", tabKey);
 
   const handleClickItem = (id) => {
@@ -60,31 +82,33 @@ const ExternalSystemsWidget = ({ isCreate }) => {
     history.push(PATH);
   };
 
+  const renderData = (values = []) => {
+    return values.map((item) => ({
+      ...item,
+      title: item.name,
+    }));
+  };
+
   const renderTab = () => {
     switch (tabKey) {
       case "general":
-        const externalSystems = data?.entries || [];
-        const currentExternalSystem = externalSystems.find(
-          (item) => item.id === Number(serviceId)
+        const classifiers = data?.entries || [];
+        const currentClassifier = classifiers.find(
+          (item) => item.id === Number(classifierId)
         );
         return (
           <GeneralForm
-            id={serviceId}
-            initialValues={currentExternalSystem}
+            id={classifierId}
+            initialValues={currentClassifier}
             path={PATH}
             isEdit
           />
         );
-      case "logs":
+      case "data":
         return (
-          <Logs serviceId={serviceId} columns={MESSAGES_COLUMNS[tabKey]} />
+          <Data classifierId={classifierId} columns={CLASSIFIER_DATA_COLUMNS} />
         );
-      case "metrics":
-        return (
-          <Metrics serviceId={serviceId} columns={MESSAGES_COLUMNS[tabKey]} />
-        );
-      case "system":
-        return "В разработке";
+
       default:
         return null;
     }
@@ -94,7 +118,7 @@ const ExternalSystemsWidget = ({ isCreate }) => {
     if (isCreate) {
       return <GeneralForm path={PATH} />;
     }
-    if (serviceId) {
+    if (classifierId) {
       return (
         <>
           <Box
@@ -113,12 +137,12 @@ const ExternalSystemsWidget = ({ isCreate }) => {
                 exclusive
                 aria-label="externalSystems"
               >
-                {EXTERNAL_SYSTEMS_GROUP.map((item) => (
+                {CLASSIFIERS_GROUP.map((item) => (
                   <ToggleButton
                     key={item.id}
                     value={item.id}
                     component={NavLink}
-                    to={`${PATH}/${serviceId}/${item.id}`}
+                    to={`${PATH}/${classifierId}/${item.id}`}
                     sx={{ width: 150 }}
                   >
                     {item.label}
@@ -137,9 +161,16 @@ const ExternalSystemsWidget = ({ isCreate }) => {
                     theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",
                 }}
               >
+                <IconButton
+                  name="add"
+                  title="Создать"
+                  color="secondary"
+                  size="small"
+                  onClick={onAddClassifierData}
+                />
                 <Filter
+                  fields={CLASSIFIER_DATA_COLUMNS}
                   filterParams={filterParams}
-                  fields={MESSAGES_COLUMNS[tabKey]}
                 />
               </Stack>
             ) : null}
@@ -166,12 +197,11 @@ const ExternalSystemsWidget = ({ isCreate }) => {
           <Panel>
             <List
               total={data?.total}
-              data={data?.entries}
-              loading={isFetching}
-              loadData={loadExternalSystems}
+              data={renderData(data?.entries)}
+              loading={isLoading}
               onClick={handleClickItem}
-              subheader="Внешние системы"
-              activeItem={serviceId}
+              subheader="Классификаторы"
+              activeItem={classifierId}
               onAdd={onAdd}
               handleChangePagination={handleChangePagination}
             />
@@ -188,8 +218,16 @@ const ExternalSystemsWidget = ({ isCreate }) => {
           <Panel>{renderContent()}</Panel>
         </Box>
       </Stack>
+      <FormModal
+        modalName="classifier-data"
+        fields={CLASSIFIER_DATA_COLUMNS}
+        createAction={(values) =>
+          createClassifierData({ classifierId, values })
+        }
+        updateAction={updateClassifierData}
+      />
     </>
   );
 };
 
-export default ExternalSystemsWidget;
+export default ClassifiersWidget;

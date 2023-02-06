@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Container from "@mui/material/Container";
 import ExternalSystemsWidget from "widgets/externalSystems";
 
@@ -14,10 +14,14 @@ const ExternalSystemsPage = ({ match: { path } }) => {
         />
         <Route
           exact
-          path={`${path}/:serviceId`}
+          path={`${path}/:serviceId/:tabKey`}
           component={ExternalSystemsWidget}
         />
         <Route exact path={path} component={ExternalSystemsWidget} />
+        <Route
+          path={`${path}/:serviceId`}
+          render={() => <Redirect to={path} />}
+        />
       </Switch>
     </Container>
   );

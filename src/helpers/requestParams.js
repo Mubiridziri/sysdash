@@ -1,5 +1,16 @@
 import { momentFormat } from "./date";
 
+export const getRequestParamsApi = (params) => {
+  const paginationParams = params?.paginationParams || {};
+  const sortParams = params?.sortParams || {};
+  const filterParams = params?.filterParams || {};
+  return {
+    ...paginationParams,
+    ...sortParams,
+    ...getFilterParams(filterParams),
+  };
+};
+
 export const getFilterParams = (values) => {
   let params = {};
   Object.keys(values).forEach((key) => {

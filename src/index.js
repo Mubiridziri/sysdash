@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 
 import ColorContextProvider from "./themes";
 import App from "./App";
-import store from "./store";
+import { store } from "store";
 
 ReactDOM.render(
   <ColorContextProvider>

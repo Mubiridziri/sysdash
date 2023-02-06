@@ -35,6 +35,7 @@ import { ReactComponent as LightSortIcon } from "images/svg/icons/light_sort_ico
 import { ReactComponent as DarkSortIcon } from "images/svg/icons/dark_sort_icon.svg";
 
 import "./styles.scss";
+import { setPaginationParams } from "store/requestParamsTable/requestParamsTable.slice";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -62,7 +63,6 @@ const ServerSideTable = ({
   total,
   columns,
   data,
-  loadData,
   loadId,
   onView,
   onEdit,
@@ -84,90 +84,22 @@ const ServerSideTable = ({
   const theme = useTheme();
   const dispatch = useDispatch();
 
-  const requestParams = useSelector((state) => state.requestParams);
-  const checkedEntries = useSelector(
-    (state) => state.checkedCheckboxes.entries
-  );
-
-  const { paginationParams, filterParams, sortParams, searchParams } =
-    requestParams;
+  const {
+    paginationParams,
+    sortParams = {},
+    searchParams = {},
+  } = useSelector((state) => state.requestParamsTable);
+  const checkedEntries = {};
 
   const handleChangePage = (event, newPage) => {
-    const pagination = { ...paginationParams, page: newPage + 1 };
-    if (isGroup) {
-      dispatch(
-        loadData({
-          url,
-          fieldName,
-          value: entryValue,
-          ...pagination,
-          ...sortParams,
-        })
-      );
-    } else {
-      const filter = getFilterParams(filterParams);
-      if (loadId) {
-        dispatch(
-          loadData(loadId, {
-            ...pagination,
-            ...sortParams,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      } else {
-        dispatch(
-          loadData({
-            ...pagination,
-            ...sortParams,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      }
-    }
-
-    dispatch(setPagination({ ...paginationParams, page: newPage + 1 }));
+    dispatch(setPaginationParams({ ...paginationParams, page: newPage + 1 }));
   };
 
   const handleChangeRowsPerPage = (event) => {
     const newRowsPerPage = +event.target.value;
     const initialPage = 1;
-    const pagination = {
-      ...paginationParams,
-      page: initialPage,
-      limit: newRowsPerPage,
-    };
-    if (isGroup) {
-      dispatch(
-        loadData({
-          url,
-          fieldName,
-          value: entryValue,
-          ...pagination,
-          ...sortParams,
-        })
-      );
-    } else {
-      const filter = getFilterParams(filterParams);
 
-      if (loadId) {
-        dispatch(
-          loadData(loadId, {
-            ...pagination,
-            ...sortParams,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      } else {
-        dispatch(
-          loadData({ ...pagination, ...sortParams, ...searchParams, ...filter })
-        );
-      }
-    }
-
-    dispatch(setPagination({ page: initialPage, limit: newRowsPerPage }));
+    dispatch(setPaginationParams({ page: initialPage, limit: newRowsPerPage }));
     dispatch(
       setCheckedCheckboxes({
         [initialPage]: checkedEntries[initialPage],
@@ -178,42 +110,7 @@ const ServerSideTable = ({
   const handleClickSort = (event, property) => {
     const isAsc = sortParams.column === property && sortParams.sort === "asc";
     const newOrder = isAsc ? "desc" : "asc";
-    if (isGroup) {
-      dispatch(
-        loadData({
-          url,
-          fieldName,
-          value: entryValue,
-          ...paginationParams,
-          column: property,
-          sort: newOrder,
-          ...searchParams,
-        })
-      );
-    } else {
-      const filter = getFilterParams(filterParams);
-      if (loadId) {
-        dispatch(
-          loadData(loadId, {
-            ...paginationParams,
-            column: property,
-            sort: newOrder,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      } else {
-        dispatch(
-          loadData({
-            ...paginationParams,
-            column: property,
-            sort: newOrder,
-            ...searchParams,
-            ...filter,
-          })
-        );
-      }
-    }
+
     dispatch(setSort({ column: property, sort: newOrder }));
   };
 
@@ -266,6 +163,7 @@ const ServerSideTable = ({
   };
   const getActionItems = (row) => {
     let actionsItems = [];
+    console.log('row', row)
 
     if (onView) {
       actionsItems.push({
