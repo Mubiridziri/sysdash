@@ -13,6 +13,7 @@ class ClassifierData
     #[ORM\Column(type: "integer")]
     #[ORM\GeneratedValue]
     #[ORM\Id]
+    #[Groups(['View'])]
     private ?int $id;
 
     #[ORM\Column(type: "string")]
