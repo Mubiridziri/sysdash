@@ -167,7 +167,7 @@ class ClassifierController extends AbstractController
 
     }
 
-    #[Route("/data/{classifierId}", methods: ["DELETE"])]
+    #[Route("/data/{classifierDataId}", methods: ["DELETE"])]
     public function removeEntry(int $classifierDataId, ManagerRegistry $managerRegistry): JsonResponse
     {
         try {
