@@ -3,10 +3,6 @@ import { Tooltip, SvgIcon } from "@mui/material";
 
 import { ReactComponent as LightIcon } from "images/svg/theme/light_icon.svg";
 import { ReactComponent as NightIcon } from "images/svg/theme/night_icon.svg";
-import { ReactComponent as LoginPersonIcon } from "images/svg/login/login_page_person_icon.svg";
-import { ReactComponent as LoginLockIcon } from "images/svg/login/login_page_lock_icon.svg";
-import { ReactComponent as PasswordNotViewIcon } from "images/svg/login/password_not_view_icon.svg";
-import { ReactComponent as PasswordViewIcon } from "images/svg/login/password_view_icon.svg";
 import { ReactComponent as UserIcon } from "images/svg/icons/user_icon.svg";
 import { ReactComponent as NotifyIcon } from "images/svg/icons/notify_icon.svg";
 import { ReactComponent as SettingsIcon } from "images/svg/icons/settings_icon.svg";
@@ -58,10 +54,6 @@ const iconTypes = {
   notify: NotifyIcon,
   settings: SettingsIcon,
   tune: TuneIcon,
-  loginPerson: LoginPersonIcon,
-  loginLock: LoginLockIcon,
-  passwordNotView: PasswordNotViewIcon,
-  passwordView: PasswordViewIcon,
   arrow: ArrowIcon,
   more: MoreIcon,
   view: ViewIcon,

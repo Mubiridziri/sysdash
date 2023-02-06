@@ -6,7 +6,7 @@ const ContainerGeneralForm = ({ children, isEdit }) => {
     <Box
       component="div"
       sx={{
-        padding: "1px 10px 5px 1px",
+        padding: "1px 1px 5px 1px",
       }}
     >
       {children}

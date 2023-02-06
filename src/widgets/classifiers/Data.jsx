@@ -9,9 +9,9 @@ import {
 
 import ServerSideTable from "components/Table/ServerSideTable";
 import { MODAL_STATE } from "components/Modal";
-import withDeleteDialog from "components/HOC/withDeleteDialog";
+import { SUCCESS_DELETE_MESSAGE } from "constants/alertMessages";
 
-const Data = ({ classifierId, columns, onOpenDeleteDialog }) => {
+const Data = ({ classifierId, columns, onOpenDeleteDialog, onOpenAlert }) => {
   const dispatch = useDispatch();
   const requestParamsTable = useSelector((state) => state.requestParamsTable);
 
@@ -41,7 +41,15 @@ const Data = ({ classifierId, columns, onOpenDeleteDialog }) => {
   };
 
   const onDelete = (id) => {
-    onOpenDeleteDialog(() => dispatch(deleteClassifierData(id)));
+    onOpenDeleteDialog(
+      async () =>
+        await deleteClassifierData(id)
+          .unwrap()
+          .then(() => {
+            onOpenAlert("success", SUCCESS_DELETE_MESSAGE);
+          })
+          .catch(() => {})
+    );
   };
 
   return (
@@ -59,4 +67,4 @@ const Data = ({ classifierId, columns, onOpenDeleteDialog }) => {
   );
 };
 
-export default withDeleteDialog(Data);
+export default Data;

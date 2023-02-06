@@ -3,7 +3,8 @@ import { NavLink, useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 
-import { loadExternalSystems } from "actions/catalogs/externalSystems";
+import { useGetExternalSystemsQuery } from "store/externalSystems/externalSystems.api";
+import { resetParams } from "store/table/requestParamsTable.slice";
 
 import Panel from "components/Panel";
 import List from "components/List";
@@ -12,10 +13,7 @@ import GeneralForm from "./GeneralForm";
 import Logs from "./Logs";
 import Metrics from "./Metrics";
 
-import { LIGHT_THEME } from "constants/themes";
 import { MESSAGES_COLUMNS } from "constants/columns";
-import { useGetExternalSystemsQuery } from "store/externalSystems/externalSystems.api";
-import { resetParams } from "store/requestParamsTable/requestParamsTable.slice";
 import Filter from "components/Filter";
 import withAlert from "components/HOC/withAlert";
 
@@ -49,7 +47,6 @@ const ExternalSystemsWidget = ({ isCreate, onOpenAlert }) => {
   const onAdd = () => {
     history.push(`${PATH}/create`);
   };
-  console.log("tabKey", tabKey);
 
   const handleClickItem = (id) => {
     const newTabKey = tabKey ?? "general";
@@ -129,21 +126,12 @@ const ExternalSystemsWidget = ({ isCreate, onOpenAlert }) => {
               </ToggleButtonGroup>
             </Box>
             {VISIBLE_FILTER.includes(tabKey) ? (
-              <Stack
-                direction="row"
-                alignItems="center"
-                sx={{
-                  height: "38px",
-                  borderRadius: "7px",
-                  bgcolor: (theme) =>
-                    theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",
-                }}
-              >
+              <Box component="div">
                 <Filter
                   filterParams={filterParams}
                   fields={MESSAGES_COLUMNS[tabKey]}
                 />
-              </Stack>
+              </Box>
             ) : null}
           </Box>
           {renderTab()}
@@ -170,7 +158,6 @@ const ExternalSystemsWidget = ({ isCreate, onOpenAlert }) => {
               total={data?.total}
               data={data?.entries}
               loading={isFetching}
-              loadData={loadExternalSystems}
               onClick={handleClickItem}
               subheader="Внешние системы"
               activeItem={serviceId}

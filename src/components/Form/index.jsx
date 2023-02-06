@@ -1,6 +1,4 @@
 import React from "react";
-import { useDispatch } from "react-redux";
-import { FORM_ERROR } from "final-form";
 import { Field, Form } from "react-final-form";
 import { Box } from "@mui/material";
 
@@ -9,14 +7,13 @@ import LoadingButton from "components/LoagingButton";
 import Button from "components/Button";
 import StackButton from "components/StackButton";
 import FormHelperText from "components/FormHelperText";
-import { STYLE_CONTENT_FORM } from "constants/styles";
-import LoadingBlock from "components/LoadingBlock";
 import AsyncSelect from "components/FormFields/AsyncSelect";
-import { parseNumber } from "helpers/parse";
 import DatepickerReactFinalForm from "components/FormFields/Datepicker/DatepickerReactFinalForm";
 import Select from "components/FormFields/Select";
-import withAlert from "components/HOC/withAlert";
+
+import { parseNumber } from "helpers/parse";
 import { SUCCESS_SAVE_MESSAGE } from "constants/alertMessages";
+import { STYLE_CONTENT_FORM } from "constants/styles";
 
 const DefaultForm = ({
   id,
@@ -26,15 +23,9 @@ const DefaultForm = ({
   createAction,
   updateAction,
   onSuccess,
-  onEdit,
   fields,
-  readOnly,
   onOpenAlert,
 }) => {
-  const checkEditClick = () => {
-    onEdit(id);
-  };
-
   const onSubmit = async (values) => {
     if (isEdit) {
       await updateAction({ id, values })
@@ -205,4 +196,4 @@ DefaultForm.defaultProps = {
   readOnly: false,
 };
 
-export default withAlert(DefaultForm);
+export default DefaultForm;

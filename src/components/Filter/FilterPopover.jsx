@@ -13,7 +13,7 @@ import { DATE_RANGE } from "constants/filter";
 import { parseNumber } from "helpers/parse";
 import DatepickerReactFinalForm from "components/FormFields/Datepicker/DatepickerReactFinalForm";
 import { isValidDate } from "helpers/formValidators";
-import { setFilterParams } from "store/requestParamsTable/requestParamsTable.slice";
+import { setFilterParams } from "store/table/requestParamsTable.slice";
 
 const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
   const dispatch = useDispatch();

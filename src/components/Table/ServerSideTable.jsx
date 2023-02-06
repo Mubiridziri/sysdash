@@ -19,14 +19,16 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import Toolbar from "@mui/material/Toolbar";
 
-import { setPagination, setSort } from "actions/requestParams";
-import { setCheckedCheckboxes } from "actions/checkboxes";
+import {
+  setPaginationParams,
+  setSortParams,
+} from "store/table/requestParamsTable.slice";
+import { setCheckedCheckboxes } from "store/table/checkboxesTable.slice";
 
 import Menu from "components/Menu";
 import CircularLoading from "components/CircularLoading";
 import { RadioButton } from "components/Radio";
 
-import { getFilterParams } from "helpers/requestParams";
 import { getHighlightedText } from "helpers/highlightedText";
 import { getAllCheckboxes } from "helpers/table";
 import { LIGHT_THEME } from "constants/themes";
@@ -35,7 +37,6 @@ import { ReactComponent as LightSortIcon } from "images/svg/icons/light_sort_ico
 import { ReactComponent as DarkSortIcon } from "images/svg/icons/dark_sort_icon.svg";
 
 import "./styles.scss";
-import { setPaginationParams } from "store/requestParamsTable/requestParamsTable.slice";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -69,13 +70,10 @@ const ServerSideTable = ({
   onDelete,
   loading,
   readOnly,
-  fieldName,
-  entryValue,
   withActions,
   withToolbar,
   withCheckboxes,
   withRadioButtons,
-  isGroup,
   extraActions,
   activeRadioButton,
   onRadioButtonClick,
@@ -89,7 +87,9 @@ const ServerSideTable = ({
     sortParams = {},
     searchParams = {},
   } = useSelector((state) => state.requestParamsTable);
-  const checkedEntries = {};
+  const checkedEntries = useSelector(
+    (state) => state.checkboxesTable.entries
+  );
 
   const handleChangePage = (event, newPage) => {
     dispatch(setPaginationParams({ ...paginationParams, page: newPage + 1 }));
@@ -111,7 +111,7 @@ const ServerSideTable = ({
     const isAsc = sortParams.column === property && sortParams.sort === "asc";
     const newOrder = isAsc ? "desc" : "asc";
 
-    dispatch(setSort({ column: property, sort: newOrder }));
+    dispatch(setSortParams({ column: property, sort: newOrder }));
   };
 
   const handleChangeAllChecked = (event, checked) => {
@@ -163,7 +163,6 @@ const ServerSideTable = ({
   };
   const getActionItems = (row) => {
     let actionsItems = [];
-    console.log('row', row)
 
     if (onView) {
       actionsItems.push({

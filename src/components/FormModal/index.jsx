@@ -7,6 +7,7 @@ import Modal, { MODAL_STATE } from "components/Modal";
 import Form from "components/Form";
 
 import { getTitleModal } from "helpers/modal";
+import withAlert from "components/HOC/withAlert";
 
 const FormModal = ({ modalName, ...props }) => {
   const dispatch = useDispatch();
@@ -18,7 +19,6 @@ const FormModal = ({ modalName, ...props }) => {
     (state) => state.modal[modalName] === MODAL_STATE.IS_EDIT
   );
   const data = useSelector((state) => state.modal.data);
-  console.log("data", data);
 
   const handleClose = useCallback(
     () => dispatch(closeModal({ modalName })),
@@ -39,4 +39,4 @@ const FormModal = ({ modalName, ...props }) => {
   );
 };
 
-export default FormModal;
+export default withAlert(FormModal);

@@ -5,6 +5,7 @@ import { Field, Form } from "react-final-form";
 import {
   useCreateClassifierMutation,
   useUpdateClassifierMutation,
+  useDeleteClassifierMutation,
 } from "store/classifiers/classifiers.api";
 
 import Input from "components/FormFields/Input";
@@ -13,23 +14,33 @@ import Button from "components/Button";
 import StackButton from "components/StackButton";
 import FormHelperText from "components/FormHelperText";
 import LoadingBlock from "components/LoadingBlock";
-import withAlert from "components/HOC/withAlert";
 import InputLabel from "components/InputLabel";
 import Card from "components/Card";
 import CardTitle from "components/Card/CardTitle";
 import ContainerGeneralForm from "./ContainerGeneralForm";
 
-import { SUCCESS_SAVE_MESSAGE } from "constants/alertMessages";
+import {
+  SUCCESS_SAVE_MESSAGE,
+  SUCCESS_DELETE_MESSAGE,
+} from "constants/alertMessages";
 
 import { required } from "helpers/formValidators";
 
-const GeneralForm = ({ id, isEdit, initialValues, onOpenAlert, path }) => {
+const GeneralForm = ({
+  id,
+  path,
+  isEdit,
+  initialValues,
+  onOpenAlert,
+  onOpenDeleteDialog,
+}) => {
   const history = useHistory();
 
   const [createClassifier, { isLoading: isLoadingCreate }] =
     useCreateClassifierMutation();
   const [updateClassifier, { isLoading: isLoadingUpdate }] =
     useUpdateClassifierMutation();
+  const [deleteClassifier] = useDeleteClassifierMutation();
 
   const onSubmit = async (values) => {
     if (isEdit) {
@@ -48,6 +59,19 @@ const GeneralForm = ({ id, isEdit, initialValues, onOpenAlert, path }) => {
         })
         .catch(() => {});
     }
+  };
+
+  const onDelete = () => {
+    onOpenDeleteDialog(
+      async () =>
+        await deleteClassifier(id)
+          .unwrap()
+          .then(() => {
+            onOpenAlert("success", SUCCESS_DELETE_MESSAGE);
+            history.push(path);
+          })
+          .catch(() => {})
+    );
   };
 
   return (
@@ -104,6 +128,17 @@ const GeneralForm = ({ id, isEdit, initialValues, onOpenAlert, path }) => {
               >
                 Сброс
               </Button>
+              {isEdit ? (
+                <Button
+                  disabled={submitting}
+                  variant="outlined"
+                  size="small"
+                  onClick={onDelete}
+                  color="inherit"
+                >
+                  Удалить
+                </Button>
+              ) : null}
             </StackButton>
             {submitError && !dirtySinceLastSubmit && (
               <FormHelperText error={submitError} />

@@ -3,6 +3,7 @@ import {
   renderProvidesTags,
   renderCreateInvalidatesTags,
   renderUpdateInvalidatesTags,
+  renderDeleteInvalidatesTags,
 } from "helpers/createApi";
 import { getRequestParamsApi } from "helpers/requestParams";
 import { BASE_URL } from "constants/baseUrl";
@@ -46,7 +47,7 @@ export const classifiersApi = createApi({
         url: `${URL}/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: () => renderCreateInvalidatesTags(TAG_TYPE),
+      invalidatesTags: () => renderDeleteInvalidatesTags(TAG_TYPE),
     }),
   }),
 });

@@ -177,7 +177,7 @@ const GeneralForm = ({ id, isEdit, initialValues, onOpenAlert, path }) => {
                 ) : null}
               </ContainerGeneralForm>
             </LoadingBlock>
-            <StackButton>
+            <StackButton sx={{ pr: 1 }}>
               <LoadingButton
                 disabled={pristine || !validSaveBtn}
                 loading={submitting}

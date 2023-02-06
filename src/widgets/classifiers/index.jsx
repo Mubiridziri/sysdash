@@ -1,15 +1,10 @@
 import React from "react";
 import { NavLink, useHistory, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Badge,
-  Box,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
+import { Box, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 
-import { resetParams } from "store/requestParamsTable/requestParamsTable.slice";
+import { openModal } from "store/modal/modal.slice";
+import { resetParams } from "store/table/requestParamsTable.slice";
 import { useGetClassifiersQuery } from "store/classifiers/classifiers.api";
 import {
   useCreateClassifierDataMutation,
@@ -18,18 +13,17 @@ import {
 
 import Panel from "components/Panel";
 import List from "components/List";
-import FilterPopover from "components/Filter/FilterPopover";
 
-import { LIGHT_THEME } from "constants/themes";
-import { CLASSIFIER_DATA_COLUMNS, MESSAGES_COLUMNS } from "constants/columns";
-import Filter from "components/Filter";
-import GeneralForm from "./GeneralForm";
 import Data from "./Data";
+import GeneralForm from "./GeneralForm";
+import Filter from "components/Filter";
 import IconButton from "components/IconButton";
 import { MODAL_STATE } from "components/Modal";
-import { openModal } from "store/modal/modal.slice";
 import FormModal from "components/FormModal";
 import withAlert from "components/HOC/withAlert";
+import withDeleteDialog from "components/HOC/withDeleteDialog";
+
+import { CLASSIFIER_DATA_COLUMNS } from "constants/columns";
 
 export const PATH = "/classifiers";
 
@@ -40,7 +34,7 @@ const CLASSIFIERS_GROUP = [
   { id: "data", label: "Данные" },
 ];
 
-const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
+const ClassifiersWidget = ({ isCreate, onOpenAlert, onOpenDeleteDialog }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -49,8 +43,9 @@ const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
   const filterParams = useSelector(
     (state) => state.requestParamsTable.filterParams
   );
+  const requestParamsList = useSelector((state) => state.requestParamsList);
 
-  const { data = {}, isLoading } = useGetClassifiersQuery();
+  const { data = {}, isFetching } = useGetClassifiersQuery(requestParamsList);
   const [createClassifierData] = useCreateClassifierDataMutation();
   const [updateClassifierData] = useUpdateClassifierDataMutation();
 
@@ -70,8 +65,6 @@ const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
       })
     );
   };
-
-  console.log("tabKey", tabKey);
 
   const handleClickItem = (id) => {
     const newTabKey = tabKey ?? "general";
@@ -103,12 +96,18 @@ const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
             initialValues={currentClassifier}
             path={PATH}
             onOpenAlert={onOpenAlert}
+            onOpenDeleteDialog={onOpenDeleteDialog}
             isEdit
           />
         );
       case "data":
         return (
-          <Data classifierId={classifierId} columns={CLASSIFIER_DATA_COLUMNS} />
+          <Data
+            classifierId={classifierId}
+            columns={CLASSIFIER_DATA_COLUMNS}
+            onOpenDeleteDialog={onOpenDeleteDialog}
+            onOpenAlert={onOpenAlert}
+          />
         );
 
       default:
@@ -153,16 +152,7 @@ const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
               </ToggleButtonGroup>
             </Box>
             {VISIBLE_FILTER.includes(tabKey) ? (
-              <Stack
-                direction="row"
-                alignItems="center"
-                sx={{
-                  height: "38px",
-                  borderRadius: "7px",
-                  bgcolor: (theme) =>
-                    theme.palette.mode === LIGHT_THEME ? "#FFFFFF" : "#333333",
-                }}
-              >
+              <Box component="div">
                 <IconButton
                   name="add"
                   title="Создать"
@@ -174,14 +164,14 @@ const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
                   fields={CLASSIFIER_DATA_COLUMNS}
                   filterParams={filterParams}
                 />
-              </Stack>
+              </Box>
             ) : null}
           </Box>
           {renderTab()}
         </>
       );
     }
-    return <Box component="div">Выберите систему</Box>;
+    return <Box component="div">Выберите классификатор</Box>;
   };
 
   return (
@@ -200,7 +190,7 @@ const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
             <List
               total={data?.total}
               data={renderData(data?.entries)}
-              loading={isLoading}
+              loading={isFetching}
               onClick={handleClickItem}
               subheader="Классификаторы"
               activeItem={classifierId}
@@ -233,4 +223,4 @@ const ClassifiersWidget = ({ isCreate, onOpenAlert }) => {
   );
 };
 
-export default withAlert(ClassifiersWidget);
+export default withAlert(withDeleteDialog(ClassifiersWidget));

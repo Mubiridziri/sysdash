@@ -14,3 +14,5 @@ export const renderCreateInvalidatesTags = (type) => [{ type, id: "LIST" }];
 export const renderUpdateInvalidatesTags = (arg, type) => [
   { type, id: arg.id },
 ];
+
+export const renderDeleteInvalidatesTags = (type) => [{ type, id: "LIST" }];
