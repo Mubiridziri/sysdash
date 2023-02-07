@@ -6,7 +6,6 @@ import {
   renderDeleteInvalidatesTags,
 } from "helpers/createApi";
 import { getRequestParamsApi } from "helpers/requestParams";
-import { BASE_URL } from "constants/baseUrl";
 
 const TAG_TYPE = "Classifiers";
 const URL = "/api/v1/classifiers";
@@ -14,9 +13,7 @@ const URL = "/api/v1/classifiers";
 export const classifiersApi = createApi({
   reducerPath: "classifiers/api",
   tagTypes: [TAG_TYPE],
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-  }),
+  baseQuery: fetchBaseQuery({}),
   endpoints: (build) => ({
     getClassifiers: build.query({
       query: (params) => ({

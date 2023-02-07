@@ -5,7 +5,6 @@ import {
   renderUpdateInvalidatesTags,
 } from "helpers/createApi";
 import { getRequestParamsApi } from "helpers/requestParams";
-import { BASE_URL } from "constants/baseUrl";
 
 const TAG_TYPE = "ExternalSystems";
 const URL = "/api/v1/services";
@@ -13,9 +12,7 @@ const URL = "/api/v1/services";
 export const externalSystemsApi = createApi({
   reducerPath: "externalSystems/api",
   tagTypes: [TAG_TYPE],
-  baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
-  }),
+  baseQuery: fetchBaseQuery({}),
   endpoints: (build) => ({
     getExternalSystems: build.query({
       query: (params) => ({
