@@ -8,7 +8,7 @@ import { getRequestParamsApi } from "helpers/requestParams";
 import { BASE_URL } from "constants/baseUrl";
 
 const TAG_TYPE = "ExternalSystems";
-const URL = "api/v1/services";
+const URL = "/api/v1/services";
 
 export const externalSystemsApi = createApi({
   reducerPath: "externalSystems/api",

@@ -32,13 +32,14 @@ const ExternalSystemsWidget = ({ isCreate, onOpenAlert }) => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { data = {}, isFetching } = useGetExternalSystemsQuery();
+  const { serviceId, tabKey } = useParams();
 
   const filterParams = useSelector(
     (state) => state.requestParamsTable.filterParams
   );
+  const requestParamsList = useSelector((state) => state.requestParamsList);
 
-  const { serviceId, tabKey } = useParams();
+  const { data = {}, isFetching } = useGetExternalSystemsQuery(requestParamsList);
 
   React.useEffect(() => {
     dispatch(resetParams());

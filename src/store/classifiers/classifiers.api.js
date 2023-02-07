@@ -9,7 +9,7 @@ import { getRequestParamsApi } from "helpers/requestParams";
 import { BASE_URL } from "constants/baseUrl";
 
 const TAG_TYPE = "Classifiers";
-const URL = "api/v1/classifiers";
+const URL = "/api/v1/classifiers";
 
 export const classifiersApi = createApi({
   reducerPath: "classifiers/api",
