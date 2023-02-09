@@ -1,19 +1,11 @@
-before_script:
-  - apt-get update -qq
-  - apt-get install -qq git
-  # Setup SSH deploy keys
-  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
-  - eval $(ssh-agent -s)
-  - ssh-add <(echo "$SSH_PRIVATE_KEY")
-  - mkdir -p ~/.ssh
-  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-    
-deploy_staging:
-  type: deploy
-  environment:
-    name: staging
-    url: http://10.0.0.78:81
+image: alpine:latest
+
+pages:
+  stage: deploy
   script:
-    - ssh admin-stnc@10.0.0.78 "cd sysdash && git checkout main && git pull origin main && docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build"
+  - echo 'Nothing to do...'
+  artifacts:
+    paths:
+    - public
   only:
-    - main
+  - main
