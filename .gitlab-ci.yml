@@ -1,6 +1,6 @@
 image: alpine:latest
 
-pages:
+build:
   stage: deploy
   script:
   - echo 'Nothing to do...'
