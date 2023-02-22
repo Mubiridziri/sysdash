@@ -3,17 +3,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Field } from "react-final-form";
 import { Popover, Box, Typography } from "@mui/material";
 
+import { setFilterParams } from "store/table/requestParamsTable.slice";
 import Icon from "components/Icon";
 import Button from "components/Button";
 import LoadingButton from "components/LoagingButton";
 import Input from "components/FormFields/Input";
 import AsyncSelect from "components/FormFields/AsyncSelect";
 import Select from "components/FormFields/Select";
-import { DATE_RANGE } from "constants/filter";
-import { parseNumber } from "helpers/parse";
 import DatepickerReactFinalForm from "components/FormFields/Datepicker/DatepickerReactFinalForm";
+
+import { parseNumber } from "helpers/parse";
 import { isValidDate } from "helpers/formValidators";
-import { setFilterParams } from "store/table/requestParamsTable.slice";
+import { formatOnlyNumber } from "helpers/formatField";
+import { DATE_RANGE } from "constants/filter";
 
 const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
   const dispatch = useDispatch();
@@ -98,17 +100,17 @@ const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
                     },
                   }}
                 >
-                  {fields.map((field) => {
-                    switch (field?.filter?.type) {
+                  {fields.map(({ id, label, field = {} }) => {
+                    switch (field.type) {
                       case "asyncselect":
                         return (
-                          <Field key={field.id} name={field.id}>
+                          <Field key={id} name={id}>
                             {({ input, meta }) => (
                               <AsyncSelect
                                 input={input}
                                 meta={meta}
-                                label={field.label}
-                                loadOptions={field.filter.loadOptions}
+                                label={label}
+                                loadOptions={field.loadOptions}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
@@ -135,16 +137,16 @@ const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
                             {Object.keys(DATE_RANGE).map((key) => {
                               return (
                                 <Field
-                                  key={`${field.id}_${key}`}
-                                  name={`${field.id}.${key}`}
+                                  key={`${id}_${key}`}
+                                  name={`${id}.${key}`}
                                   validate={isValidDate}
                                 >
                                   {({ input, meta }) => (
                                     <DatepickerReactFinalForm
-                                      type={field?.filter?.type}
+                                      type={field.type}
                                       input={input}
                                       meta={meta}
-                                      label={`${field.label} (${DATE_RANGE[key]})`}
+                                      label={`${label} (${DATE_RANGE[key]})`}
                                       variant="outlined"
                                       size="small"
                                       fullWidth
@@ -157,16 +159,16 @@ const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
                         );
                       case "select":
                         return (
-                          <Field key={field.id} name={field.id}>
+                          <Field key={id} name={id}>
                             {({ input, meta }) => (
                               <Select
                                 input={input}
                                 meta={meta}
-                                label={field.label}
+                                label={label}
                                 variant="outlined"
                                 fullWidth
                                 size="small"
-                                options={field.filter.options}
+                                options={field.options}
                                 icon={
                                   <Icon
                                     name="search"
@@ -182,9 +184,10 @@ const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
                       case "number":
                         return (
                           <Field
-                            key={field.id}
-                            name={field.id}
+                            key={id}
+                            name={id}
                             parse={parseNumber}
+                            format={formatOnlyNumber}
                           >
                             {({ input, meta }) => (
                               <Input
@@ -193,7 +196,6 @@ const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
                                 component={Input}
                                 label={field.label}
                                 variant="outlined"
-                                type="number"
                                 size="small"
                                 fullWidth
                                 InputProps={{
@@ -212,12 +214,12 @@ const FilterPopover = ({ fields, open, loadData, loadId, onClose }) => {
                         );
                       default:
                         return (
-                          <Field key={field.id} name={field.id}>
+                          <Field key={id} name={id}>
                             {({ input, meta }) => (
                               <Input
                                 input={input}
                                 meta={meta}
-                                label={field.label}
+                                label={label}
                                 variant="outlined"
                                 size="small"
                                 fullWidth
