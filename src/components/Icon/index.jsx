@@ -46,6 +46,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 
 const iconTypes = {
   light: LightIcon,
@@ -94,6 +96,8 @@ const iconTypes = {
   success: CheckCircleOutlineIcon,
   help: HelpOutlineIcon,
   copy: ContentCopyIcon,
+  arrowRight: ArrowRightIcon,
+  arrowLeft: ArrowLeftIcon,
 };
 
 const Icon = ({ name, title, ...props }) => {

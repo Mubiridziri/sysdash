@@ -37,6 +37,7 @@ import { ReactComponent as LightSortIcon } from "images/svg/icons/light_sort_ico
 import { ReactComponent as DarkSortIcon } from "images/svg/icons/dark_sort_icon.svg";
 
 import "./styles.scss";
+import ShowMoreTextComponent from "components/ShowMoreText";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -87,9 +88,7 @@ const ServerSideTable = ({
     sortParams = {},
     searchParams = {},
   } = useSelector((state) => state.requestParamsTable);
-  const checkedEntries = useSelector(
-    (state) => state.checkboxesTable.entries
-  );
+  const checkedEntries = useSelector((state) => state.checkboxesTable.entries);
 
   const handleChangePage = (event, newPage) => {
     dispatch(setPaginationParams({ ...paginationParams, page: newPage + 1 }));
@@ -194,9 +193,15 @@ const ServerSideTable = ({
   };
 
   const getColumnValue = (column, value, row) => {
-    const columnValue = column.format ? column.format(value, row) : value;
+    const columnValue = column.format ? (
+      column.format(value, row)
+    ) : (
+      <ShowMoreTextComponent>{value}</ShowMoreTextComponent>
+    );
     if (Object.keys(searchParams).length) {
-      return getHighlightedText(String(columnValue), searchParams.search);
+      return column.format
+        ? column.format(value, row)
+        : getHighlightedText(String(value), searchParams.search);
     }
     return columnValue;
   };
@@ -253,7 +258,7 @@ const ServerSideTable = ({
                 <StyledTableCell
                   key={column.id}
                   align="center"
-                  sx={{ minWidth: 160 }}
+                  sx={{ minWidth: 160, maxWidth: 160 }}
                   width={160}
                 >
                   <TableSortLabel
@@ -322,6 +327,8 @@ const ServerSideTable = ({
                           width={160}
                           sx={{
                             minWidth: 160,
+                            maxWidth: 160,
+                            wordBreak: "break-word",
                           }}
                         >
                           {getColumnValue(column, value, row)}

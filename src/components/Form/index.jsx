@@ -12,8 +12,10 @@ import DatepickerReactFinalForm from "components/FormFields/Datepicker/Datepicke
 import Select from "components/FormFields/Select";
 
 import { parseNumber } from "helpers/parse";
+import { getFieldProps } from "helpers/form";
 import { SUCCESS_SAVE_MESSAGE } from "constants/alertMessages";
 import { STYLE_CONTENT_FORM } from "constants/styles";
+import { formatOnlyNumber } from "helpers/formatField";
 
 const DefaultForm = ({
   id,
@@ -61,17 +63,18 @@ const DefaultForm = ({
         return (
           <form onSubmit={handleSubmit}>
             <Box component="div" sx={STYLE_CONTENT_FORM}>
-              {fields.map(({ id, label, filter, ...field }) => {
-                switch (filter?.type) {
+              {fields.map(({ id, label, field = {} }) => {
+                const fieldProps = getFieldProps(field);
+                switch (field.type) {
                   case "asyncselect":
                     return (
-                      <Field key={id} name={id} {...field}>
+                      <Field key={id} name={id} {...fieldProps}>
                         {({ input, meta }) => (
                           <AsyncSelect
                             input={input}
                             meta={meta}
                             label={label}
-                            loadOptions={filter.loadOptions}
+                            loadOptions={field.loadOptions}
                             variant="outlined"
                             fullWidth
                             disabled={isView}
@@ -81,7 +84,13 @@ const DefaultForm = ({
                     );
                   case "number":
                     return (
-                      <Field name={id} key={id} parse={parseNumber} {...field}>
+                      <Field
+                        name={id}
+                        key={id}
+                        parse={parseNumber}
+                        format={formatOnlyNumber}
+                        {...field}
+                      >
                         {({ input, meta }) => (
                           <Input
                             input={input}
@@ -89,7 +98,6 @@ const DefaultForm = ({
                             component={Input}
                             label={label}
                             variant="outlined"
-                            type="number"
                             InputProps={{
                               disabled: isView,
                             }}
@@ -102,10 +110,10 @@ const DefaultForm = ({
                   case "datetime":
                   case "time":
                     return (
-                      <Field key={id} name={id} validate={field.validate}>
+                      <Field key={id} name={id} {...fieldProps}>
                         {({ input, meta }) => (
                           <DatepickerReactFinalForm
-                            type={filter?.type}
+                            type={field.type}
                             input={input}
                             meta={meta}
                             label={label}
@@ -118,7 +126,7 @@ const DefaultForm = ({
                     );
                   case "select":
                     return (
-                      <Field key={id} name={id} {...field}>
+                      <Field key={id} name={id} {...fieldProps}>
                         {({ input, meta }) => (
                           <Select
                             input={input}
@@ -126,7 +134,7 @@ const DefaultForm = ({
                             label={label}
                             variant="outlined"
                             fullWidth
-                            options={filter.options}
+                            options={field.options}
                             disabled={isView}
                           />
                         )}
@@ -134,7 +142,7 @@ const DefaultForm = ({
                     );
                   default:
                     return (
-                      <Field key={id} name={id} {...field}>
+                      <Field key={id} name={id} {...fieldProps}>
                         {({ input, meta }) => (
                           <Input
                             input={input}
