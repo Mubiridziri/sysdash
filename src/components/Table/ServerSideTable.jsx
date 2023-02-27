@@ -28,17 +28,17 @@ import { setCheckedCheckboxes } from "store/table/checkboxesTable.slice";
 import Menu from "components/Menu";
 import CircularLoading from "components/CircularLoading";
 import { RadioButton } from "components/Radio";
+import ShowMoreTextComponent from "components/ShowMoreText";
 
 import { getHighlightedText } from "helpers/highlightedText";
 import { getAllCheckboxes } from "helpers/table";
+import { isShowMoreText } from "helpers/showMoreText";
 import { LIGHT_THEME } from "constants/themes";
 
 import { ReactComponent as LightSortIcon } from "images/svg/icons/light_sort_icon.svg";
 import { ReactComponent as DarkSortIcon } from "images/svg/icons/dark_sort_icon.svg";
 
 import "./styles.scss";
-import ShowMoreTextComponent from "components/ShowMoreText";
-import { isShowMoreText } from "helpers/showMoreText";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
