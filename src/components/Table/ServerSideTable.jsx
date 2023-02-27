@@ -38,6 +38,7 @@ import { ReactComponent as DarkSortIcon } from "images/svg/icons/dark_sort_icon.
 
 import "./styles.scss";
 import ShowMoreTextComponent from "components/ShowMoreText";
+import { isShowMoreText } from "helpers/showMoreText";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -193,15 +194,14 @@ const ServerSideTable = ({
   };
 
   const getColumnValue = (column, value, row) => {
-    const columnValue = column.format ? (
-      column.format(value, row)
-    ) : (
-      <ShowMoreTextComponent>{value}</ShowMoreTextComponent>
-    );
+    const columnValue = column.format ? column.format(value, row) : value;
     if (Object.keys(searchParams).length) {
       return column.format
         ? column.format(value, row)
         : getHighlightedText(String(value), searchParams.search);
+    }
+    if (isShowMoreText(columnValue)) {
+      return <ShowMoreTextComponent>{columnValue}</ShowMoreTextComponent>;
     }
     return columnValue;
   };
