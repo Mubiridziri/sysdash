@@ -2,7 +2,7 @@
 
 namespace App\Controller\Builder;
 
-use App\Doctrine\DoctrineMasterEntityService;
+use App\Service\Doctrine\DoctrineMasterEntityService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

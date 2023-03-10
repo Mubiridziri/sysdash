@@ -12,9 +12,11 @@ class Classifier
     #[ORM\Column(type: "integer")]
     #[ORM\GeneratedValue]
     #[ORM\Id]
+    #[Groups(['View'])]
     private ?int $id;
 
     #[ORM\Column(type: "string")]
+    #[Groups(['View'])]
     private string $name;
 
     /**

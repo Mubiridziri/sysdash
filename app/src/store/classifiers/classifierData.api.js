@@ -7,7 +7,7 @@ import {
 } from "helpers/createApi";
 import { getRequestParamsApi } from "helpers/requestParams";
 
-const TAG_TYPE = "ClassifierData";
+const TAG_TYPE = "ClassifierDataController";
 const URL = "/api/v1/classifiers/data";
 
 export const classifierDataApi = createApi({

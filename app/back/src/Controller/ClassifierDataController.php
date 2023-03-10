@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Controller\Builder\DictionaryControllerInterface;
 use App\Entity\Classifier;
+use App\Entity\ClassifierData;
 use App\Service\Doctrine\DoctrineMasterEntityService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,7 +17,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route("/api/v1/classifiers/data")]
-class ClassifierData extends AbstractController implements DictionaryControllerInterface
+class ClassifierDataController extends AbstractController implements DictionaryControllerInterface
 {
     #[Route("/{classifierId}", methods: ['GET'])]
     public function listEntries(
@@ -56,8 +57,7 @@ class ClassifierData extends AbstractController implements DictionaryControllerI
             $classifierData = $serializer->deserialize(
                 $request->getContent(),
                 static::getEntityName(),
-                'json',
-                [AbstractNormalizer::GROUPS => ['Create']]
+                'json'
             );
             $classifierData->setClassifier($classifier);
             $em->persist($classifierData);
