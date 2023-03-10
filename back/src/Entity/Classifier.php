@@ -15,7 +15,6 @@ class Classifier
     private ?int $id;
 
     #[ORM\Column(type: "string")]
-    #[Groups(['View', 'Create', 'Edit'])]
     private string $name;
 
     /**

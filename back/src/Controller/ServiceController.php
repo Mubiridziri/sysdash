@@ -2,72 +2,36 @@
 
 namespace App\Controller;
 
+use App\Controller\Builder\DictionaryControllerInterface;
+use App\Controller\Builder\HasCreateActionTrait;
+use App\Controller\Builder\HasEditActionTrait;
+use App\Controller\Builder\HasListActionTrait;
+use App\Controller\Builder\HasRemoveActionTrait;
+use App\Controller\Builder\HasShowActionTrait;
 use App\Entity\Service;
-use App\Service\Doctrine\DoctrineMasterEntityService;
-use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route("/api/v1/services")]
-class ServiceController extends AbstractController
+class ServiceController extends AbstractController implements DictionaryControllerInterface
 {
-    #[Route("", methods: ["GET"])]
-    public function list(DoctrineMasterEntityService $entityService, Request $request): JsonResponse
+    use HasListActionTrait, HasShowActionTrait, HasCreateActionTrait, HasEditActionTrait, HasRemoveActionTrait;
+
+    public static function getEntityName(): string
     {
-        return $this->json($entityService->getData(Service::class, $request));
+        return Service::class;
     }
 
-    #[Route("", methods: ["POST"])]
-    public function create(
-        SerializerInterface $serializer,
-        ManagerRegistry     $managerRegistry,
-        Request             $request
-    ): JsonResponse
+    public function getDefaultSerializationContext(): array
     {
-        $service = $serializer->deserialize($request->getContent(), Service::class, 'json');
-        $em = $managerRegistry->getManager();
-        $em->persist($service);
-        $em->flush();
-        return $this->json($service);
+       return [];
     }
 
-    #[Route("/{serviceId}", methods: ["PUT"])]
-    public function update(
-        int                 $serviceId,
-        SerializerInterface $serializer,
-        ManagerRegistry     $managerRegistry,
-        Request             $request
-    ): JsonResponse
+    public function getDefaultDeserializationContext(): array
     {
-        $em = $managerRegistry->getManager();
-        $service = $em->getRepository(Service::class)->findOneBy(['id' => $serviceId]);
-        if (!$service) {
-            throw $this->createNotFoundException();
-        }
-        $service = $serializer->deserialize($request->getContent(), Service::class, 'json', [
-            AbstractNormalizer::OBJECT_TO_POPULATE => $service,
+        return [
             AbstractNormalizer::GROUPS => ['Edit']
-        ]);
-
-        $em->persist($service);
-        $em->flush();
-        return $this->json($service);
-    }
-
-    #[Route("/{serviceId}", methods: ["DELETE"])]
-    public function remove(int $serviceId, ManagerRegistry $managerRegistry): JsonResponse
-    {
-        $em = $managerRegistry->getManager();
-        $service = $em->getRepository(Service::class)->findOneBy(['id' => $serviceId]);
-        if (!$service) {
-            throw $this->createNotFoundException();
-        }
-        $em->remove($service);
-        $em->flush();
-        return $this->json($service);
+        ];
     }
 }

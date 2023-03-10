@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Log;
+use App\Controller\Builder\DictionaryControllerInterface;
 use App\Entity\Metric;
 use App\Entity\Service;
 use App\Service\Doctrine\DoctrineMasterEntityService;
@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[Route("/api/v1/metrics")]
-class MetricController extends AbstractController
+class MetricController extends AbstractController implements DictionaryControllerInterface
 {
     #[Route("/{serviceId}", methods: ["GET"])]
     public function list(
@@ -33,10 +33,25 @@ class MetricController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $query = $managerRegistry->getRepository(Metric::class)->getDefaultQuery($service);
+        $query = $managerRegistry->getRepository(static::getEntityName())->getDefaultQuery($service);
         $metrics = $entityService->getData(Metric::class, $request, $query);
-        return $this->json($metrics, Response::HTTP_OK, [], [
+        return $this->json($metrics, Response::HTTP_OK, [], $this->getDefaultSerializationContext());
+    }
+
+    public static function getEntityName(): string
+    {
+        return Metric::class;
+    }
+
+    public function getDefaultSerializationContext(): array
+    {
+        return [
             AbstractNormalizer::GROUPS => ['View']
-        ]);
+        ];
+    }
+
+    public function getDefaultDeserializationContext(): array
+    {
+        return [];
     }
 }

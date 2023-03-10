@@ -17,11 +17,11 @@ class ClassifierData
     private ?int $id;
 
     #[ORM\Column(type: "string")]
-    #[Groups(['View', 'Create', 'Edit'])]
+    #[Groups(['View'])]
     private string $code;
 
     #[ORM\Column(type: "string")]
-    #[Groups(['View', 'Create', 'Edit'])]
+    #[Groups(['View'])]
     private string $value;
 
     #[ORM\ManyToOne(targetEntity: Classifier::class)]

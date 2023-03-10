@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\Builder\DictionaryControllerInterface;
 use App\Entity\Log;
 use App\Entity\Service;
 use App\Service\Doctrine\DoctrineMasterEntityService;
@@ -14,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 #[Route("/api/v1/logs")]
-class LogController extends AbstractController
+class LogController extends AbstractController implements DictionaryControllerInterface
 {
     #[Route("/{serviceId}", methods: ["GET"])]
     public function list(
@@ -32,10 +33,25 @@ class LogController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $query = $managerRegistry->getRepository(Log::class)->getDefaultQuery($service);
+        $query = $managerRegistry->getRepository(static::getEntityName())->getDefaultQuery($service);
         $logs = $entityService->getData(Log::class, $request, $query);
-        return $this->json($logs, Response::HTTP_OK, [], [
+        return $this->json($logs, Response::HTTP_OK, [], $this->getDefaultSerializationContext());
+    }
+
+    public static function getEntityName(): string
+    {
+        return Log::class;
+    }
+
+    public function getDefaultSerializationContext(): array
+    {
+        return [
             AbstractNormalizer::GROUPS => ['View']
-        ]);
+        ];
+    }
+
+    public function getDefaultDeserializationContext(): array
+    {
+        return [];
     }
 }
